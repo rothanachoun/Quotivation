@@ -7,7 +7,7 @@ import VectorImage from 'react-native-vector-image';
 import { Paths } from '@/navigation/paths';
 import type { RootStackParamList } from '@/navigation/types';
 
-import { Example, Home, Profile } from '@/screens';
+import { Explore, Home, Profile } from '@/screens';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator<RootStackParamList>();
@@ -37,7 +37,7 @@ const profileIcon = resolveIcon(
 function ExploreStackNavigator() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name={Paths.Example} component={Example} />
+      <Stack.Screen name={Paths.Explore} component={Explore} />
     </Stack.Navigator>
   );
 }

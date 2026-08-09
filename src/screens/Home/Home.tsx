@@ -10,6 +10,8 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import { useLovedQuotes } from '@/hooks/useLovedQuotes';
+
 import QuotePage from './components/QuotePage';
 import { useQuotes } from './hooks/useQuotes';
 import type { Quote } from './types';
@@ -26,25 +28,11 @@ function getShareMessage(quote: Quote): string {
 function Home() {
   const insets = useSafeAreaInsets();
   const { error, isLoading, quotes } = useQuotes();
-  const [lovedQuoteIds, setLovedQuoteIds] = useState<Set<string>>(new Set());
+  const { isLoved, toggleLovedQuote } = useLovedQuotes();
   const [pageHeight, setPageHeight] = useState(0);
   const scrollY = useRef(new Animated.Value(0)).current;
   const actionBottom =
     Math.max(insets.bottom, MINIMUM_ACTION_INSET) + TAB_BAR_CLEARANCE;
-
-  const toggleLovedQuote = useCallback((quoteId: string) => {
-    setLovedQuoteIds(currentIds => {
-      const nextIds = new Set(currentIds);
-
-      if (nextIds.has(quoteId)) {
-        nextIds.delete(quoteId);
-      } else {
-        nextIds.add(quoteId);
-      }
-
-      return nextIds;
-    });
-  }, []);
 
   const shareQuote = useCallback((quote: Quote) => {
     Share.share({ message: getShareMessage(quote) });
@@ -56,7 +44,7 @@ function Home() {
         actionBottom={actionBottom}
         height={pageHeight}
         index={index}
-        isLoved={lovedQuoteIds.has(item.id)}
+        isLoved={isLoved(item.id)}
         onShare={shareQuote}
         onToggleLove={toggleLovedQuote}
         quote={item}
@@ -65,7 +53,7 @@ function Home() {
     ),
     [
       actionBottom,
-      lovedQuoteIds,
+      isLoved,
       pageHeight,
       shareQuote,
       scrollY,

@@ -7,8 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0DBA5EED4E4B4C0F925EED01 /* quotes.sqlite in Resources */ = {isa = PBXBuildFile; fileRef = 0DBA5EED4E4B4C0F925EED02 /* quotes.sqlite */; };
 		0C80B921A6F3F58F76C31292 /* libPods-Quotivation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5DCACB8F33CDC322A6C60F78 /* libPods-Quotivation.a */; };
+		0DBA5EED4E4B4C0F925EED01 /* quotes.sqlite in Resources */ = {isa = PBXBuildFile; fileRef = 0DBA5EED4E4B4C0F925EED02 /* quotes.sqlite */; };
 		12011B34F17045888FE8E037 /* CormorantGaramond-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E8564822A5E848AD8F335BDF /* CormorantGaramond-Italic.ttf */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		1A10D939FF7449C8927A5118 /* Manrope-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8AA0CE14E9BE45B69D36B6BA /* Manrope-ExtraBold.ttf */; };

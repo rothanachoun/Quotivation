@@ -7,7 +7,7 @@ export type RootScreenProps<
 > = BottomTabScreenProps<RootStackParamList, S>;
 
 export type RootStackParamList = {
-  [Paths.Example]: undefined;
+  [Paths.Explore]: undefined;
   [Paths.Startup]: undefined;
   [Paths.Search]: undefined;
   [Paths.Home]: undefined;

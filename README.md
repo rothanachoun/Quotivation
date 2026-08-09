@@ -73,6 +73,73 @@ When you want to forcefully reload, for example to reset the state of your app, 
 - **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Dev Menu**, accessed via <kbd>Ctrl</kbd> + <kbd>M</kbd> (Windows/Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (macOS).
 - **iOS**: Press <kbd>R</kbd> in iOS Simulator.
 
+## Quote database workflow
+
+Quotes are edited locally and bundled with the app. The app does not need a quote server and opens its runtime database as read-only.
+
+### Important files
+
+```text
+src/assets/db/quotes.json    Editable quote source data
+src/assets/db/version.json   Bundled database version
+src/assets/db/quotes.sqlite  Generated database bundled with the app
+scripts/import-quotes.mjs    JSON-to-SQLite importer
+```
+
+Edit `quotes.json`, not `quotes.sqlite` directly. Each quote can contain text, category, author, text style, styled segments, a quote symbol, background settings, and an optional image URL.
+
+### Update the quotes
+
+1. Edit `src/assets/db/quotes.json`.
+2. Increase the number in `src/assets/db/version.json`:
+
+```json
+{
+  "version": 2
+}
+```
+
+3. Import the JSON into SQLite:
+
+```sh
+npm run db:import
+```
+
+4. Rebuild the app so the updated SQLite file is added to the native bundle:
+
+```sh
+npm run ios
+```
+
+Or, for Android:
+
+```sh
+npm run android
+```
+
+The import command validates the JSON, rejects duplicate quote IDs, replaces the existing rows in one transaction, serializes nested objects into the JSON database columns, and stamps the version into SQLite using `PRAGMA user_version`.
+
+The importer uses the local `sqlite3` command. On macOS it is normally available by default. Verify it with:
+
+```sh
+sqlite3 --version
+```
+
+### When the app copies the database
+
+The master database is bundled inside the application, but SQLite reads a copy from the app's private storage.
+
+```text
+First launch             -> copy the bundled database
+Same database version    -> reuse the existing copy
+Newer bundled version    -> replace the existing copy once
+Later launches           -> reuse the updated copy
+```
+
+At startup, the app compares `version.json` with the runtime database's `PRAGMA user_version`. Therefore, always increase `version.json` before importing and releasing changed quote data. If the version is not increased, existing users will continue using their previous database copy.
+
+Deleting the app also deletes its runtime database. The bundled `src/assets/db/quotes.sqlite` file remains part of the source project and is copied again after reinstalling.
+
 ## Congratulations! :tada:
 
 You've successfully run and modified your React Native App. :partying_face:

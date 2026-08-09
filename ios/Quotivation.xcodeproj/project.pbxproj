@@ -7,24 +7,64 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0DBA5EED4E4B4C0F925EED01 /* quotes.sqlite in Resources */ = {isa = PBXBuildFile; fileRef = 0DBA5EED4E4B4C0F925EED02 /* quotes.sqlite */; };
 		0C80B921A6F3F58F76C31292 /* libPods-Quotivation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5DCACB8F33CDC322A6C60F78 /* libPods-Quotivation.a */; };
+		12011B34F17045888FE8E037 /* CormorantGaramond-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E8564822A5E848AD8F335BDF /* CormorantGaramond-Italic.ttf */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
+		1A10D939FF7449C8927A5118 /* Manrope-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8AA0CE14E9BE45B69D36B6BA /* Manrope-ExtraBold.ttf */; };
+		1A881B83C398413BA7505E68 /* LibreBaskerville-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 20E7044AAAF84AFAA4D0618A /* LibreBaskerville-Italic.ttf */; };
+		3A52CAAC7D654BF9A490C72A /* CormorantGaramond-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 1C30F4BBD8064C489BD74F9D /* CormorantGaramond-SemiBold.ttf */; };
+		43A0D6BC51784C7C9C83EB20 /* PlayfairDisplay-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6EE40306226B4F1B811242FA /* PlayfairDisplay-Italic.ttf */; };
+		4F832EF0BD8F43879A08AB14 /* Caveat-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D94CB7C4F7FE44018ABAC12F /* Caveat-Regular.ttf */; };
+		5A868292816640A09C252A26 /* LibreBaskerville-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 58CDF278F79841D1BC56463A /* LibreBaskerville-Regular.ttf */; };
 		61B154971B65C9FFD2A17F19 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */; };
+		65659AF068784CF2A8EBDBE1 /* LibreBaskerville-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 58EFEBC87885409AAF12BABE /* LibreBaskerville-SemiBold.ttf */; };
 		761780ED2CA45674006654EE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761780EC2CA45674006654EE /* AppDelegate.swift */; };
+		790C2D1957AF4A97A4082D0C /* DMSerifDisplay-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 818187C602E149C199DE0E2C /* DMSerifDisplay-Italic.ttf */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
+		936BEB89190247AF9F762763 /* Lora-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9DE4BC81DCBA410B9FFA3460 /* Lora-Regular.ttf */; };
+		95979943C4D34A67BD7EA379 /* Lora-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 38B68BB6337447D9AF8D4810 /* Lora-SemiBold.ttf */; };
+		95C30E531E3E4FDB99B93C00 /* PlayfairDisplay-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 25F94FDFE39343A488E53076 /* PlayfairDisplay-SemiBold.ttf */; };
+		9811C5F08AD54300AFD8A2E5 /* DMSerifDisplay-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 913802F5F9A542C2A1631620 /* DMSerifDisplay-Regular.ttf */; };
+		AFF8F0BC6EA84A3DB130F3B9 /* Lora-Italic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0F1483D76B2746D39712CCEC /* Lora-Italic.ttf */; };
+		D968F2C0F5844750B9C10A8D /* CormorantGaramond-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E48317223DF34F82B92AFE11 /* CormorantGaramond-Regular.ttf */; };
+		DD7D633A3FC44F00A3A065B7 /* Manrope-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E3DB714A5EC142C09E0AB733 /* Manrope-SemiBold.ttf */; };
+		E0841C4982884375BA005E88 /* PlayfairDisplay-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = FD663A07062B4B05A8BB4C8F /* PlayfairDisplay-Regular.ttf */; };
+		EC9429BC854F4FD6ACB04145 /* Caveat-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 966D0208AFB04D9AB0381E38 /* Caveat-SemiBold.ttf */; };
+		F8A6E6F89FB94A2EBABC21F4 /* Manrope-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 3B0A141FB5D547F88874D205 /* Manrope-Regular.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0DBA5EED4E4B4C0F925EED02 /* quotes.sqlite */ = {isa = PBXFileReference; lastKnownFileType = file; name = quotes.sqlite; path = ../src/assets/db/quotes.sqlite; sourceTree = "<group>"; };
+		0F1483D76B2746D39712CCEC /* Lora-Italic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Lora-Italic.ttf"; path = "../src/assets/fonts/Lora-Italic.ttf"; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* Quotivation.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Quotivation.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = Quotivation/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = Quotivation/Info.plist; sourceTree = "<group>"; };
 		13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = PrivacyInfo.xcprivacy; path = Quotivation/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		1C30F4BBD8064C489BD74F9D /* CormorantGaramond-SemiBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "CormorantGaramond-SemiBold.ttf"; path = "../src/assets/fonts/CormorantGaramond-SemiBold.ttf"; sourceTree = "<group>"; };
+		20E7044AAAF84AFAA4D0618A /* LibreBaskerville-Italic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "LibreBaskerville-Italic.ttf"; path = "../src/assets/fonts/LibreBaskerville-Italic.ttf"; sourceTree = "<group>"; };
+		25F94FDFE39343A488E53076 /* PlayfairDisplay-SemiBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "PlayfairDisplay-SemiBold.ttf"; path = "../src/assets/fonts/PlayfairDisplay-SemiBold.ttf"; sourceTree = "<group>"; };
+		38B68BB6337447D9AF8D4810 /* Lora-SemiBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Lora-SemiBold.ttf"; path = "../src/assets/fonts/Lora-SemiBold.ttf"; sourceTree = "<group>"; };
+		3B0A141FB5D547F88874D205 /* Manrope-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Manrope-Regular.ttf"; path = "../src/assets/fonts/Manrope-Regular.ttf"; sourceTree = "<group>"; };
 		3B4392A12AC88292D35C810B /* Pods-Quotivation.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Quotivation.debug.xcconfig"; path = "Target Support Files/Pods-Quotivation/Pods-Quotivation.debug.xcconfig"; sourceTree = "<group>"; };
 		5709B34CF0A7D63546082F79 /* Pods-Quotivation.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Quotivation.release.xcconfig"; path = "Target Support Files/Pods-Quotivation/Pods-Quotivation.release.xcconfig"; sourceTree = "<group>"; };
+		58CDF278F79841D1BC56463A /* LibreBaskerville-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "LibreBaskerville-Regular.ttf"; path = "../src/assets/fonts/LibreBaskerville-Regular.ttf"; sourceTree = "<group>"; };
+		58EFEBC87885409AAF12BABE /* LibreBaskerville-SemiBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "LibreBaskerville-SemiBold.ttf"; path = "../src/assets/fonts/LibreBaskerville-SemiBold.ttf"; sourceTree = "<group>"; };
 		5DCACB8F33CDC322A6C60F78 /* libPods-Quotivation.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Quotivation.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		6EE40306226B4F1B811242FA /* PlayfairDisplay-Italic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "PlayfairDisplay-Italic.ttf"; path = "../src/assets/fonts/PlayfairDisplay-Italic.ttf"; sourceTree = "<group>"; };
 		761780EC2CA45674006654EE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = Quotivation/AppDelegate.swift; sourceTree = "<group>"; };
+		818187C602E149C199DE0E2C /* DMSerifDisplay-Italic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "DMSerifDisplay-Italic.ttf"; path = "../src/assets/fonts/DMSerifDisplay-Italic.ttf"; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = Quotivation/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		8AA0CE14E9BE45B69D36B6BA /* Manrope-ExtraBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Manrope-ExtraBold.ttf"; path = "../src/assets/fonts/Manrope-ExtraBold.ttf"; sourceTree = "<group>"; };
+		913802F5F9A542C2A1631620 /* DMSerifDisplay-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "DMSerifDisplay-Regular.ttf"; path = "../src/assets/fonts/DMSerifDisplay-Regular.ttf"; sourceTree = "<group>"; };
+		966D0208AFB04D9AB0381E38 /* Caveat-SemiBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Caveat-SemiBold.ttf"; path = "../src/assets/fonts/Caveat-SemiBold.ttf"; sourceTree = "<group>"; };
+		9DE4BC81DCBA410B9FFA3460 /* Lora-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Lora-Regular.ttf"; path = "../src/assets/fonts/Lora-Regular.ttf"; sourceTree = "<group>"; };
+		D94CB7C4F7FE44018ABAC12F /* Caveat-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Caveat-Regular.ttf"; path = "../src/assets/fonts/Caveat-Regular.ttf"; sourceTree = "<group>"; };
+		E3DB714A5EC142C09E0AB733 /* Manrope-SemiBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "Manrope-SemiBold.ttf"; path = "../src/assets/fonts/Manrope-SemiBold.ttf"; sourceTree = "<group>"; };
+		E48317223DF34F82B92AFE11 /* CormorantGaramond-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "CormorantGaramond-Regular.ttf"; path = "../src/assets/fonts/CormorantGaramond-Regular.ttf"; sourceTree = "<group>"; };
+		E8564822A5E848AD8F335BDF /* CormorantGaramond-Italic.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "CormorantGaramond-Italic.ttf"; path = "../src/assets/fonts/CormorantGaramond-Italic.ttf"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
+		FD663A07062B4B05A8BB4C8F /* PlayfairDisplay-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "PlayfairDisplay-Regular.ttf"; path = "../src/assets/fonts/PlayfairDisplay-Regular.ttf"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -42,6 +82,7 @@
 		13B07FAE1A68108700A75B9A /* Quotivation */ = {
 			isa = PBXGroup;
 			children = (
+				0DBA5EED4E4B4C0F925EED02 /* quotes.sqlite */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				761780EC2CA45674006654EE /* AppDelegate.swift */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
@@ -75,6 +116,7 @@
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
 				BBD78D7AC51CEA395F1C20DB /* Pods */,
+				AA20E0E235C6440A8BB3D681 /* Resources */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -87,6 +129,33 @@
 				13B07F961A680F5B00A75B9A /* Quotivation.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		AA20E0E235C6440A8BB3D681 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				0F1483D76B2746D39712CCEC /* Lora-Italic.ttf */,
+				E8564822A5E848AD8F335BDF /* CormorantGaramond-Italic.ttf */,
+				38B68BB6337447D9AF8D4810 /* Lora-SemiBold.ttf */,
+				818187C602E149C199DE0E2C /* DMSerifDisplay-Italic.ttf */,
+				25F94FDFE39343A488E53076 /* PlayfairDisplay-SemiBold.ttf */,
+				E3DB714A5EC142C09E0AB733 /* Manrope-SemiBold.ttf */,
+				D94CB7C4F7FE44018ABAC12F /* Caveat-Regular.ttf */,
+				20E7044AAAF84AFAA4D0618A /* LibreBaskerville-Italic.ttf */,
+				1C30F4BBD8064C489BD74F9D /* CormorantGaramond-SemiBold.ttf */,
+				E48317223DF34F82B92AFE11 /* CormorantGaramond-Regular.ttf */,
+				913802F5F9A542C2A1631620 /* DMSerifDisplay-Regular.ttf */,
+				6EE40306226B4F1B811242FA /* PlayfairDisplay-Italic.ttf */,
+				58CDF278F79841D1BC56463A /* LibreBaskerville-Regular.ttf */,
+				FD663A07062B4B05A8BB4C8F /* PlayfairDisplay-Regular.ttf */,
+				3B0A141FB5D547F88874D205 /* Manrope-Regular.ttf */,
+				58EFEBC87885409AAF12BABE /* LibreBaskerville-SemiBold.ttf */,
+				9DE4BC81DCBA410B9FFA3460 /* Lora-Regular.ttf */,
+				966D0208AFB04D9AB0381E38 /* Caveat-SemiBold.ttf */,
+				8AA0CE14E9BE45B69D36B6BA /* Manrope-ExtraBold.ttf */,
+			);
+			name = Resources;
+			path = "";
 			sourceTree = "<group>";
 		};
 		BBD78D7AC51CEA395F1C20DB /* Pods */ = {
@@ -158,9 +227,29 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0DBA5EED4E4B4C0F925EED01 /* quotes.sqlite in Resources */,
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				61B154971B65C9FFD2A17F19 /* PrivacyInfo.xcprivacy in Resources */,
+				AFF8F0BC6EA84A3DB130F3B9 /* Lora-Italic.ttf in Resources */,
+				12011B34F17045888FE8E037 /* CormorantGaramond-Italic.ttf in Resources */,
+				95979943C4D34A67BD7EA379 /* Lora-SemiBold.ttf in Resources */,
+				790C2D1957AF4A97A4082D0C /* DMSerifDisplay-Italic.ttf in Resources */,
+				95C30E531E3E4FDB99B93C00 /* PlayfairDisplay-SemiBold.ttf in Resources */,
+				DD7D633A3FC44F00A3A065B7 /* Manrope-SemiBold.ttf in Resources */,
+				4F832EF0BD8F43879A08AB14 /* Caveat-Regular.ttf in Resources */,
+				1A881B83C398413BA7505E68 /* LibreBaskerville-Italic.ttf in Resources */,
+				3A52CAAC7D654BF9A490C72A /* CormorantGaramond-SemiBold.ttf in Resources */,
+				D968F2C0F5844750B9C10A8D /* CormorantGaramond-Regular.ttf in Resources */,
+				9811C5F08AD54300AFD8A2E5 /* DMSerifDisplay-Regular.ttf in Resources */,
+				43A0D6BC51784C7C9C83EB20 /* PlayfairDisplay-Italic.ttf in Resources */,
+				5A868292816640A09C252A26 /* LibreBaskerville-Regular.ttf in Resources */,
+				E0841C4982884375BA005E88 /* PlayfairDisplay-Regular.ttf in Resources */,
+				F8A6E6F89FB94A2EBABC21F4 /* Manrope-Regular.ttf in Resources */,
+				65659AF068784CF2A8EBDBE1 /* LibreBaskerville-SemiBold.ttf in Resources */,
+				936BEB89190247AF9F762763 /* Lora-Regular.ttf in Resources */,
+				EC9429BC854F4FD6ACB04145 /* Caveat-SemiBold.ttf in Resources */,
+				1A10D939FF7449C8927A5118 /* Manrope-ExtraBold.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

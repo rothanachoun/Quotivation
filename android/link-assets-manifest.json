@@ -1,0 +1,81 @@
+{
+  "migIndex": 1,
+  "data": [
+    {
+      "path": "src/assets/fonts/Caveat-Regular.ttf",
+      "sha1": "3aa777431d98147893512898982bb73b811511d0"
+    },
+    {
+      "path": "src/assets/fonts/Caveat-SemiBold.ttf",
+      "sha1": "843e0aa77f115dae13120c356f14444d950d54b9"
+    },
+    {
+      "path": "src/assets/fonts/CormorantGaramond-Italic.ttf",
+      "sha1": "29975f0966555547fed2c1b99a2f233d87c68fe8"
+    },
+    {
+      "path": "src/assets/fonts/CormorantGaramond-Regular.ttf",
+      "sha1": "867aaae05cfce4fca8a4f5c3522b46b01b0068be"
+    },
+    {
+      "path": "src/assets/fonts/CormorantGaramond-SemiBold.ttf",
+      "sha1": "3946cea5d2f369766d54573fdae34cfcebfe7126"
+    },
+    {
+      "path": "src/assets/fonts/DMSerifDisplay-Italic.ttf",
+      "sha1": "72ca98f21702bb6a8790e68d2acce354bacfa8d5"
+    },
+    {
+      "path": "src/assets/fonts/DMSerifDisplay-Regular.ttf",
+      "sha1": "efabe55b7e799d9674a691f994accadd19aaa588"
+    },
+    {
+      "path": "src/assets/fonts/LibreBaskerville-Italic.ttf",
+      "sha1": "40c035d01ed4d83a3fcfc66a42ab56b21bc4c447"
+    },
+    {
+      "path": "src/assets/fonts/LibreBaskerville-Regular.ttf",
+      "sha1": "9f64c682695f51c125c27577527377a6fc2e025c"
+    },
+    {
+      "path": "src/assets/fonts/LibreBaskerville-SemiBold.ttf",
+      "sha1": "b458e616fb1868531c05785bf0461a80db616f24"
+    },
+    {
+      "path": "src/assets/fonts/Lora-Italic.ttf",
+      "sha1": "af3df0dfa62a44dfb75be69e1cdc38c2cdfe2b89"
+    },
+    {
+      "path": "src/assets/fonts/Lora-Regular.ttf",
+      "sha1": "2f0de70df8ae30d4e64fffcb8850fc9b111365c3"
+    },
+    {
+      "path": "src/assets/fonts/Lora-SemiBold.ttf",
+      "sha1": "7850da50ade64e68ce01cd318716b0b2927a8b9b"
+    },
+    {
+      "path": "src/assets/fonts/Manrope-ExtraBold.ttf",
+      "sha1": "df131208d5c08ff782fbf12c264f473d8dacd83e"
+    },
+    {
+      "path": "src/assets/fonts/Manrope-Regular.ttf",
+      "sha1": "3f36e4904a42d23273ac346047c1b6bcf067ccfc"
+    },
+    {
+      "path": "src/assets/fonts/Manrope-SemiBold.ttf",
+      "sha1": "f7a023cd6c102b2ffa8bf729579552445970d62d"
+    },
+    {
+      "path": "src/assets/fonts/PlayfairDisplay-Italic.ttf",
+      "sha1": "dffe6fa2688bf379ec6a33a9507e70af6fc2b39c"
+    },
+    {
+      "path": "src/assets/fonts/PlayfairDisplay-Regular.ttf",
+      "sha1": "3e12c2cf422de852cd0af0227179901b155abf14"
+    },
+    {
+      "path": "src/assets/fonts/PlayfairDisplay-SemiBold.ttf",
+      "sha1": "7fa24e8796734ec17d72f1e97cfb5d427508e337"
+    }
+  ]
+}

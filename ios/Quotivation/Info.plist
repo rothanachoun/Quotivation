@@ -34,7 +34,7 @@
 		<true/>
 	</dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
+	<string/>
 	<key>RCTNewArchEnabled</key>
 	<true/>
 	<key>UILaunchStoryboardName</key>
@@ -56,5 +56,27 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>UIAppFonts</key>
+	<array>
+		<string>Lora-Italic.ttf</string>
+		<string>CormorantGaramond-Italic.ttf</string>
+		<string>Lora-SemiBold.ttf</string>
+		<string>DMSerifDisplay-Italic.ttf</string>
+		<string>PlayfairDisplay-SemiBold.ttf</string>
+		<string>Manrope-SemiBold.ttf</string>
+		<string>Caveat-Regular.ttf</string>
+		<string>LibreBaskerville-Italic.ttf</string>
+		<string>CormorantGaramond-SemiBold.ttf</string>
+		<string>CormorantGaramond-Regular.ttf</string>
+		<string>DMSerifDisplay-Regular.ttf</string>
+		<string>PlayfairDisplay-Italic.ttf</string>
+		<string>LibreBaskerville-Regular.ttf</string>
+		<string>PlayfairDisplay-Regular.ttf</string>
+		<string>Manrope-Regular.ttf</string>
+		<string>LibreBaskerville-SemiBold.ttf</string>
+		<string>Lora-Regular.ttf</string>
+		<string>Caveat-SemiBold.ttf</string>
+		<string>Manrope-ExtraBold.ttf</string>
+	</array>
 </dict>
 </plist>

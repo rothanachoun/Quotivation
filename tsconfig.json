@@ -8,7 +8,8 @@
       "@navigation/*": ["./src/navigation/*"],
       "@components/*": ["./src/components/*"],
       "@hooks/*": ["./src/hooks/*"],
-      "@utils/*": ["./src/utils/*"]
+      "@utils/*": ["./src/utils/*"],
+      "@database/*": ["./src/database/*"]
     }
   },
   "include": ["**/*.ts", "**/*.tsx"],

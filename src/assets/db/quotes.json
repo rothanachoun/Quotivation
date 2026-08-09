@@ -1,0 +1,204 @@
+[
+  {
+    "id": "begin",
+    "type": "text",
+    "text": "The secret of getting ahead is getting started.",
+    "category": "motivation",
+    "author": {
+      "name": "Mark Twain",
+      "style": { "color": "#FFFFFF", "fontFamily": "Manrope-SemiBold", "fontSize": 17, "lineHeight": 24, "textAlign": "left" }
+    },
+    "style": { "color": "#FFF7ED", "fontFamily": "DMSerifDisplay-Regular", "fontSize": 34, "lineHeight": 50, "textAlign": "center" },
+    "segments": [
+      { "text": "The secret of " },
+      { "text": "getting ahead", "style": { "color": "#FFD37A", "fontFamily": "Caveat-SemiBold", "fontSize": 42 } },
+      { "text": " is getting started." }
+    ],
+    "symbol": { "icon": "quote-1", "placement": "top", "alignment": "center", "size": 36 },
+    "backgroundColor": "#5F4C45",
+    "backgroundImageUrl": "https://images.unsplash.com/photo-1762374008728-78176e41f9f1?auto=format&fit=crop&w=1200&h=1800&q=82",
+    "imageUrl": null,
+    "updatedAt": "2026-08-09T00:00:00Z"
+  },
+  {
+    "id": "courage",
+    "type": "text",
+    "text": "Courage is resistance to fear, mastery of fear—not absence of fear.",
+    "category": "courage",
+    "author": {
+      "name": "Mark Twain",
+      "style": { "color": "#FFFFFF", "fontFamily": "Manrope-SemiBold", "fontSize": 17, "lineHeight": 24, "textAlign": "left" }
+    },
+    "style": { "color": "#FFFFFF", "fontFamily": "LibreBaskerville-SemiBold", "fontSize": 30, "lineHeight": 42, "textAlign": "center" },
+    "segments": [{ "text": "Courage is resistance to fear, mastery of fear—not absence of fear." }],
+    "symbol": { "icon": "quote-2", "placement": "top", "alignment": "left", "size": 68 },
+    "backgroundColor": "#27313B",
+    "backgroundImageUrl": "https://images.unsplash.com/photo-1613144488732-19df6d7e8656?auto=format&fit=crop&w=1200&h=1800&q=82",
+    "imageUrl": null,
+    "updatedAt": "2026-08-09T00:00:00Z"
+  },
+  {
+    "id": "direction",
+    "type": "text",
+    "text": "It is never too late to be what you might have been.",
+    "category": "inspiration",
+    "author": {
+      "name": "George Eliot",
+      "style": { "color": "#F7E9FF", "fontFamily": "CormorantGaramond-Italic", "fontSize": 19, "lineHeight": 26, "textAlign": "center" }
+    },
+    "style": { "color": "#F7E9FF", "fontFamily": "CormorantGaramond-SemiBold", "fontSize": 38, "lineHeight": 47, "textAlign": "center" },
+    "segments": [
+      { "text": "It is never too late to be " },
+      { "text": "what you might have been.", "style": { "color": "#E5C4FF", "fontStyle": "italic" } }
+    ],
+    "symbol": { "icon": "quote-3", "placement": "top", "alignment": "center", "size": 72 },
+    "backgroundColor": "#43374A",
+    "backgroundImageUrl": "https://images.unsplash.com/photo-1478661477530-b8a393ccf4ee?auto=format&fit=crop&w=1200&h=1800&q=82",
+    "imageUrl": null,
+    "updatedAt": "2026-08-09T00:00:00Z"
+  },
+  {
+    "id": "today",
+    "type": "text",
+    "text": "The future depends on what you do today.",
+    "category": "motivation",
+    "author": {
+      "name": "Mahatma Gandhi",
+      "style": { "color": "#E9FFF8", "fontFamily": "Lora-Italic", "fontSize": 17, "lineHeight": 24, "textAlign": "right" }
+    },
+    "style": { "color": "#E9FFF8", "fontFamily": "Lora-SemiBold", "fontSize": 32, "lineHeight": 44, "textAlign": "center" },
+    "segments": [
+      { "text": "The future depends on " },
+      { "text": "what you do today.", "style": { "color": "#9FFFD9" } }
+    ],
+    "symbol": { "icon": "quote-4", "placement": "top", "alignment": "center", "size": 72 },
+    "backgroundColor": "#29413D",
+    "backgroundImageUrl": "https://images.unsplash.com/photo-1696321832456-b077e2b94d46?auto=format&fit=crop&w=1200&h=1800&q=82",
+    "imageUrl": null,
+    "updatedAt": "2026-08-09T00:00:00Z"
+  },
+  {
+    "id": "progress",
+    "type": "text",
+    "text": "Great things are done by a series of small things brought together.",
+    "category": "progress",
+    "author": {
+      "name": "Vincent van Gogh",
+      "style": { "color": "#FFF2D9", "fontFamily": "PlayfairDisplay-Italic", "fontSize": 17, "lineHeight": 24, "textAlign": "left" }
+    },
+    "style": { "color": "#FFF2D9", "fontFamily": "PlayfairDisplay-SemiBold", "fontSize": 31, "lineHeight": 43, "textAlign": "center" },
+    "segments": [
+      { "text": "Great things are done by a series of " },
+      { "text": "small things", "style": { "color": "#FFD28A", "fontSize": 30 } },
+      { "text": " brought together." }
+    ],
+    "symbol": { "icon": "quote-5", "placement": "top", "alignment": "left", "size": 70 },
+    "backgroundColor": "#493B2E",
+    "backgroundImageUrl": "https://images.unsplash.com/photo-1732476548602-2c903e2fe267?auto=format&fit=crop&w=1200&h=1800&q=82",
+    "imageUrl": null,
+    "updatedAt": "2026-08-09T00:00:00Z"
+  },
+  {
+    "id": "difference",
+    "type": "text",
+    "text": "Act as if what you do makes a difference. It does.",
+    "category": "action",
+    "author": {
+      "name": "William James",
+      "style": { "color": "#F2F7FF", "fontFamily": "Manrope-SemiBold", "fontSize": 17, "lineHeight": 24, "textAlign": "left" }
+    },
+    "style": { "color": "#F2F7FF", "fontFamily": "Manrope-SemiBold", "fontSize": 33, "lineHeight": 44, "textAlign": "left" },
+    "segments": [
+      { "text": "Act as if what you do makes a " },
+      { "text": "difference.", "style": { "color": "#65B8FF", "fontSize": 36 } },
+      { "text": " It does." }
+    ],
+    "symbol": { "icon": "quote-1", "placement": "top", "alignment": "left", "size": 78 },
+    "backgroundColor": "#18385A",
+    "backgroundImageUrl": "https://images.unsplash.com/photo-1762374008728-78176e41f9f1?auto=format&fit=crop&w=1200&h=1800&q=82",
+    "imageUrl": null,
+    "updatedAt": "2026-08-09T00:00:00Z"
+  },
+  {
+    "id": "nows",
+    "type": "text",
+    "text": "Forever is composed of nows.",
+    "category": "mindfulness",
+    "author": {
+      "name": "Emily Dickinson",
+      "style": { "color": "#FFF7F0", "fontFamily": "CormorantGaramond-Italic", "fontSize": 20, "lineHeight": 27, "textAlign": "center" }
+    },
+    "style": { "color": "#FFF7F0", "fontFamily": "CormorantGaramond-SemiBold", "fontSize": 42, "lineHeight": 50, "textAlign": "center" },
+    "segments": [
+      { "text": "Forever is composed of " },
+      { "text": "nows.", "style": { "color": "#FFD5DF", "fontStyle": "italic" } }
+    ],
+    "symbol": { "icon": "quote-2", "placement": "top", "alignment": "center", "size": 72 },
+    "backgroundColor": "#6D3F50",
+    "backgroundImageUrl": "https://images.unsplash.com/photo-1613144488732-19df6d7e8656?auto=format&fit=crop&w=1200&h=1800&q=82",
+    "imageUrl": null,
+    "updatedAt": "2026-08-09T00:00:00Z"
+  },
+  {
+    "id": "efforts",
+    "type": "text",
+    "text": "Success is the sum of small efforts, repeated day in and day out.",
+    "category": "success",
+    "author": {
+      "name": "Robert Collier",
+      "style": { "color": "#FFF8E7", "fontFamily": "Lora-Italic", "fontSize": 17, "lineHeight": 24, "textAlign": "right" }
+    },
+    "style": { "color": "#FFF8E7", "fontFamily": "Lora-SemiBold", "fontSize": 30, "lineHeight": 43, "textAlign": "left" },
+    "segments": [
+      { "text": "Success is the sum of " },
+      { "text": "small efforts", "style": { "color": "#FFE09A" } },
+      { "text": ", repeated day in and day out." }
+    ],
+    "symbol": { "icon": "quote-3", "placement": "top", "alignment": "left", "size": 68 },
+    "backgroundColor": "#574527",
+    "backgroundImageUrl": "https://images.unsplash.com/photo-1478661477530-b8a393ccf4ee?auto=format&fit=crop&w=1200&h=1800&q=82",
+    "imageUrl": null,
+    "updatedAt": "2026-08-09T00:00:00Z"
+  },
+  {
+    "id": "through",
+    "type": "text",
+    "text": "The best way out is always through.",
+    "category": "resilience",
+    "author": {
+      "name": "Robert Frost",
+      "style": { "color": "#EEF2FF", "fontFamily": "Manrope-SemiBold", "fontSize": 17, "lineHeight": 24, "textAlign": "left" }
+    },
+    "style": { "color": "#FFFFFF", "fontFamily": "Manrope-SemiBold", "fontSize": 35, "lineHeight": 45, "textAlign": "center" },
+    "segments": [
+      { "text": "The best way out is always " },
+      { "text": "through.", "style": { "color": "#A9B5FF", "fontSize": 38 } }
+    ],
+    "symbol": { "icon": "quote-4", "placement": "background", "alignment": "center", "size": 220 },
+    "backgroundColor": "#19214B",
+    "backgroundImageUrl": "https://images.unsplash.com/photo-1696321832456-b077e2b94d46?auto=format&fit=crop&w=1200&h=1800&q=82",
+    "imageUrl": null,
+    "updatedAt": "2026-08-09T00:00:00Z"
+  },
+  {
+    "id": "possible",
+    "type": "text",
+    "text": "It always seems impossible until it is done.",
+    "category": "achievement",
+    "author": {
+      "name": "Nelson Mandela",
+      "style": { "color": "#F5FFF9", "fontFamily": "PlayfairDisplay-Italic", "fontSize": 18, "lineHeight": 25, "textAlign": "center" }
+    },
+    "style": { "color": "#F5FFF9", "fontFamily": "PlayfairDisplay-SemiBold", "fontSize": 33, "lineHeight": 45, "textAlign": "center" },
+    "segments": [
+      { "text": "It always seems " },
+      { "text": "impossible", "style": { "color": "#9FE1C2" } },
+      { "text": " until it is done." }
+    ],
+    "symbol": { "icon": "quote-5", "placement": "bottom", "alignment": "center", "size": 56 },
+    "backgroundColor": "#20483B",
+    "backgroundImageUrl": "https://images.unsplash.com/photo-1732476548602-2c903e2fe267?auto=format&fit=crop&w=1200&h=1800&q=82",
+    "imageUrl": null,
+    "updatedAt": "2026-08-09T00:00:00Z"
+  }
+]

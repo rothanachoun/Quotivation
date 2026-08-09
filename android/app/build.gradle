@@ -79,6 +79,9 @@ android {
     compileSdk rootProject.ext.compileSdkVersion
 
     namespace "com.quotivation"
+    sourceSets {
+        main.assets.srcDirs += ["../../src/assets/db"]
+    }
     defaultConfig {
         applicationId "com.quotivation"
         minSdkVersion rootProject.ext.minSdkVersion

@@ -11,6 +11,7 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useLovedQuotes } from '@/hooks/useLovedQuotes';
+import { useFollowedCategories } from '@/hooks/useFollowedCategories';
 
 import QuotePage from './components/QuotePage';
 import { useQuotes } from './hooks/useQuotes';
@@ -27,7 +28,8 @@ function getShareMessage(quote: Quote): string {
 
 function Home() {
   const insets = useSafeAreaInsets();
-  const { error, isLoading, quotes } = useQuotes();
+  const { followedCategoryNames } = useFollowedCategories();
+  const { error, isLoading, quotes } = useQuotes(followedCategoryNames);
   const { isLoved, toggleLovedQuote } = useLovedQuotes();
   const [pageHeight, setPageHeight] = useState(0);
   const scrollY = useRef(new Animated.Value(0)).current;
@@ -74,7 +76,11 @@ function Home() {
         <Text style={styles.centeredStateText}>{error}</Text>
       )}
       {!isLoading && !error && quotes.length === 0 && (
-        <Text style={styles.centeredStateText}>No quotes available.</Text>
+        <Text style={styles.centeredStateText}>
+          {followedCategoryNames.size === 0
+            ? 'Follow categories in Explore to personalize your feed.'
+            : 'No quotes are available for your followed categories.'}
+        </Text>
       )}
       {canRenderFeed && (
         <Animated.FlatList

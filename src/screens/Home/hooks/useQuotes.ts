@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { getQuotes } from '@/database/quotes';
+import { getQuotesByCategories } from '@/database/quotes';
 
 import { mapQuoteRow } from '../mapQuoteRow';
 import type { Quote } from '../types';
@@ -13,7 +13,7 @@ type QuotesState = {
   quotes: Quote[];
 };
 
-export function useQuotes(): QuotesState {
+export function useQuotes(categories: ReadonlySet<string>): QuotesState {
   const [state, setState] = useState<QuotesState>({
     error: null,
     isLoading: true,
@@ -23,7 +23,13 @@ export function useQuotes(): QuotesState {
   useEffect(() => {
     let cancelled = false;
 
-    getQuotes(INITIAL_QUOTE_LIMIT)
+    setState(currentState => ({
+      ...currentState,
+      error: null,
+      isLoading: true,
+    }));
+
+    getQuotesByCategories([...categories], INITIAL_QUOTE_LIMIT)
       .then(rows => {
         if (!cancelled) {
           setState({
@@ -47,7 +53,7 @@ export function useQuotes(): QuotesState {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [categories]);
 
   return state;
 }

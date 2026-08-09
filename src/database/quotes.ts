@@ -75,3 +75,26 @@ export async function getQuotesByCategory(
 
   return result.rows as QuoteRow[];
 }
+
+export async function getQuotesByCategories(
+  categories: readonly string[],
+  limit = 20,
+  offset = 0,
+): Promise<QuoteRow[]> {
+  if (categories.length === 0) {
+    return [];
+  }
+
+  const database = getDatabase();
+  const placeholders = categories.map(() => '?').join(', ');
+  const result = await database.execute(
+    `SELECT *
+     FROM quotes
+     WHERE category IN (${placeholders})
+     ORDER BY id
+     LIMIT ? OFFSET ?`,
+    [...categories, limit, offset],
+  );
+
+  return result.rows as QuoteRow[];
+}

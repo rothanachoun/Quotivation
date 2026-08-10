@@ -117,7 +117,26 @@ Or, for Android:
 npm run android
 ```
 
-The import command validates the JSON, rejects duplicate quote IDs, replaces the existing rows in one transaction, serializes nested objects into the JSON database columns, and stamps the version into SQLite using `PRAGMA user_version`.
+The import command validates the JSON, rejects duplicate quote IDs, replaces the existing rows in one transaction, serializes nested objects into the JSON database columns, generates a stable `shuffle_key` for each quote, and stamps the version into SQLite using `PRAGMA user_version`.
+
+Quote IDs must remain stable after release. Loved and recently viewed quotes are stored locally by ID, so changing an existing ID makes it appear to the app as a new quote.
+
+### Shuffle keys and indexes
+
+The importer generates `shuffle_key` from the quote ID. Do not add or maintain this value in `quotes.json`.
+
+The generated database contains:
+
+```sql
+shuffle_key INTEGER NOT NULL DEFAULT 0
+
+CREATE INDEX idx_quotes_category_shuffle
+ON quotes(category, shuffle_key);
+```
+
+The stable key gives each quote a reusable pseudo-random position. Home chooses a random cursor, queries forward through the indexed values, and wraps around to the beginning if it needs more results. This avoids using `ORDER BY RANDOM()`, which becomes expensive for a large quote database.
+
+The importer safely adds the column and index when importing an older database. Schema changes must also be accompanied by an increase in `version.json` so installed apps receive the new database.
 
 The importer uses the local `sqlite3` command. On macOS it is normally available by default. Verify it with:
 
@@ -139,6 +158,32 @@ Later launches           -> reuse the updated copy
 At startup, the app compares `version.json` with the runtime database's `PRAGMA user_version`. Therefore, always increase `version.json` before importing and releasing changed quote data. If the version is not increased, existing users will continue using their previous database copy.
 
 Deleting the app also deletes its runtime database. The bundled `src/assets/db/quotes.sqlite` file remains part of the source project and is copied again after reinstalling.
+
+### Personalized Home feed
+
+SQLite stores read-only quote content. MMKV separately stores user-specific data:
+
+```text
+Followed category names
+Loved quote IDs
+Recently viewed quote IDs
+```
+
+Home builds the feed in this order:
+
+```text
+Followed categories
+        -> indexed random-cursor SQLite query
+        -> unseen quotes first
+        -> previously viewed quotes last
+        -> oldest viewed quotes recycled first when needed
+```
+
+The current candidate batch is limited to 200 quotes. MMKV retains the 200 most recently viewed IDs. A quote is recorded as viewed after at least 60% of it remains visible for 250 milliseconds.
+
+Pulling down at the top of Home refreshes the candidate order without deleting viewing history. Closing and reopening the app also preserves followed categories, loved quotes, and recent history. Uninstalling the app removes this MMKV personalization data.
+
+User data must not be added to `quotes.sqlite`. A newer bundled database may replace the runtime SQLite copy, while MMKV personalization must remain intact across quote database upgrades.
 
 ## Congratulations! :tada:
 

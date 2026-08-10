@@ -29,6 +29,33 @@ const sqlJson = value =>
 const sqlNullableText = value =>
   value == null || value === '' ? 'NULL' : sqlText(value);
 
+function createShuffleKey(id) {
+  let hash = 2166136261;
+
+  for (let index = 0; index < id.length; index += 1) {
+    hash ^= id.charCodeAt(index);
+    hash = Math.imul(hash, 16777619);
+  }
+
+  return (hash >>> 0) % 2147483647;
+}
+
+const tableInfoResult = spawnSync(
+  'sqlite3',
+  [databasePath, 'PRAGMA table_info(quotes);'],
+  { encoding: 'utf8' },
+);
+
+if (tableInfoResult.error || tableInfoResult.status !== 0) {
+  throw new Error(
+    tableInfoResult.stderr?.trim() || 'Could not inspect the quotes table',
+  );
+}
+
+const hasShuffleKey = tableInfoResult.stdout
+  .split('\n')
+  .some(column => column.split('|')[1] === 'shuffle_key');
+
 const ids = new Set();
 const statements = quotes.map((quote, index) => {
   if (!quote.id || !quote.text || !quote.category) {
@@ -59,7 +86,8 @@ const statements = quotes.map((quote, index) => {
     background_color,
     background_image_url,
     image_url,
-    updated_at
+    updated_at,
+    shuffle_key
   ) VALUES (
     ${sqlText(quote.id)},
     ${sqlText(quote.type)},
@@ -72,15 +100,21 @@ const statements = quotes.map((quote, index) => {
     ${sqlText(quote.backgroundColor ?? '#000000')},
     ${sqlNullableText(quote.backgroundImageUrl)},
     ${sqlNullableText(quote.imageUrl)},
-    ${sqlText(quote.updatedAt ?? new Date().toISOString())}
+    ${sqlText(quote.updatedAt ?? new Date().toISOString())},
+    ${createShuffleKey(quote.id)}
   );`;
 });
 
 const sql = [
   'PRAGMA foreign_keys = ON;',
+  hasShuffleKey
+    ? ''
+    : 'ALTER TABLE quotes ADD COLUMN shuffle_key INTEGER NOT NULL DEFAULT 0;',
   'BEGIN IMMEDIATE;',
   'DELETE FROM quotes;',
   ...statements,
+  `CREATE INDEX IF NOT EXISTS idx_quotes_category_shuffle
+   ON quotes(category, shuffle_key);`,
   `PRAGMA user_version = ${databaseVersion};`,
   'COMMIT;',
 ].join('\n');

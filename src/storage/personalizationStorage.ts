@@ -7,4 +7,5 @@ export const personalizationStorage = createMMKV({
 export const personalizationKeys = {
   followedCategories: 'followed-category-names.v1',
   lovedQuotes: 'loved-quote-ids.v1',
+  recentlyViewedQuotes: 'recently-viewed-quote-ids.v1',
 } as const;

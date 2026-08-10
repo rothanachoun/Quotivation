@@ -8,6 +8,7 @@ export type QuoteRow = {
   id: string;
   image_url: string | null;
   segments_json: string | null;
+  shuffle_key: number;
   style_json: string | null;
   symbol_json: string | null;
   text: string;
@@ -79,7 +80,6 @@ export async function getQuotesByCategory(
 export async function getQuotesByCategories(
   categories: readonly string[],
   limit = 20,
-  offset = 0,
 ): Promise<QuoteRow[]> {
   if (categories.length === 0) {
     return [];
@@ -87,14 +87,25 @@ export async function getQuotesByCategories(
 
   const database = getDatabase();
   const placeholders = categories.map(() => '?').join(', ');
-  const result = await database.execute(
+  const shuffleCursor = Math.floor(Math.random() * 2147483647);
+  const query = (comparison: '>=' | '<', queryLimit: number) =>
+    database.execute(
     `SELECT *
      FROM quotes
      WHERE category IN (${placeholders})
-     ORDER BY id
-     LIMIT ? OFFSET ?`,
-    [...categories, limit, offset],
-  );
+       AND shuffle_key ${comparison} ?
+     ORDER BY shuffle_key, id
+     LIMIT ?`,
+      [...categories, shuffleCursor, queryLimit],
+    );
 
-  return result.rows as QuoteRow[];
+  const firstResult = await query('>=', limit);
+  const rows = firstResult.rows as QuoteRow[];
+
+  if (rows.length < limit) {
+    const wrappedResult = await query('<', limit - rows.length);
+    rows.push(...(wrappedResult.rows as QuoteRow[]));
+  }
+
+  return rows;
 }

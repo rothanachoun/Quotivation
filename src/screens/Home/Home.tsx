@@ -1,5 +1,5 @@
 import { useCallback, useRef, useState } from 'react';
-import type { ListRenderItem } from 'react-native';
+import type { ListRenderItem, ViewToken } from 'react-native';
 import {
   ActivityIndicator,
   Animated,
@@ -12,6 +12,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useLovedQuotes } from '@/hooks/useLovedQuotes';
 import { useFollowedCategories } from '@/hooks/useFollowedCategories';
+import { useQuoteHistory } from '@/hooks/useQuoteHistory';
 
 import QuotePage from './components/QuotePage';
 import { useQuotes } from './hooks/useQuotes';
@@ -29,16 +30,40 @@ function getShareMessage(quote: Quote): string {
 function Home() {
   const insets = useSafeAreaInsets();
   const { followedCategoryNames } = useFollowedCategories();
-  const { error, isLoading, quotes } = useQuotes(followedCategoryNames);
+  const { error, isLoading, isRefreshing, quotes, refresh } = useQuotes(
+    followedCategoryNames,
+  );
   const { isLoved, toggleLovedQuote } = useLovedQuotes();
+  const { recordQuoteViewed } = useQuoteHistory();
   const [pageHeight, setPageHeight] = useState(0);
   const scrollY = useRef(new Animated.Value(0)).current;
+  const lastViewedQuoteId = useRef<string | null>(null);
+  const viewabilityConfig = useRef({
+    itemVisiblePercentThreshold: 60,
+    minimumViewTime: 250,
+  }).current;
+  const onViewableItemsChanged = useRef(
+    ({ viewableItems }: { viewableItems: ViewToken<Quote>[] }) => {
+      const visibleQuote = viewableItems.find(item => item.isViewable)?.item;
+
+      if (visibleQuote && lastViewedQuoteId.current !== visibleQuote.id) {
+        lastViewedQuoteId.current = visibleQuote.id;
+        recordQuoteViewed(visibleQuote.id);
+      }
+    },
+  ).current;
   const actionBottom =
     Math.max(insets.bottom, MINIMUM_ACTION_INSET) + TAB_BAR_CLEARANCE;
 
   const shareQuote = useCallback((quote: Quote) => {
     Share.share({ message: getShareMessage(quote) });
   }, []);
+
+  const refreshFeed = useCallback(() => {
+    lastViewedQuoteId.current = null;
+    scrollY.setValue(0);
+    refresh();
+  }, [refresh, scrollY]);
 
   const renderItem = useCallback<ListRenderItem<Quote>>(
     ({ index, item }) => (
@@ -99,11 +124,15 @@ function Home() {
             [{ nativeEvent: { contentOffset: { y: scrollY } } }],
             { useNativeDriver: true },
           )}
+          onRefresh={refreshFeed}
+          onViewableItemsChanged={onViewableItemsChanged}
           pagingEnabled
+          refreshing={isRefreshing}
           renderItem={renderItem}
           scrollEventThrottle={16}
           showsVerticalScrollIndicator={false}
           windowSize={3}
+          viewabilityConfig={viewabilityConfig}
         />
       )}
     </View>

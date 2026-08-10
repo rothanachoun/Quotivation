@@ -19,7 +19,11 @@ const navigationTheme = {
   colors: {
     ...DarkTheme.colors,
     background: APP_BACKGROUND_COLOR,
+    border: colors.border,
     card: APP_BACKGROUND_COLOR,
+    notification: colors.accent,
+    primary: colors.accent,
+    text: colors.textPrimary,
   },
 };
 
@@ -89,6 +93,8 @@ function ApplicationNavigator() {
       <Tab.Navigator
         screenOptions={{
           sceneStyle: { backgroundColor: APP_BACKGROUND_COLOR },
+          tabBarActiveTintColor: colors.accent,
+          tabBarInactiveTintColor: colors.textSecondary,
         }}
       >
         <Tab.Screen

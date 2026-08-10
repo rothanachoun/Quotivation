@@ -38,7 +38,6 @@ const CATEGORY_GROUPS = categoryGroupsData as CategoryGroup[];
 function Explore() {
   const insets = useSafeAreaInsets();
   const {
-    followedCategoryNames,
     isFollowingCategory,
     toggleFollowedCategory,
   } = useFollowedCategories();
@@ -95,17 +94,7 @@ function Explore() {
         .map(category => ({
           ...category,
           quoteCount: quoteCounts.get(category.id) ?? 0,
-        }))
-        .sort((left, right) => {
-          const leftIsFollowed = followedCategoryNames.has(left.id);
-          const rightIsFollowed = followedCategoryNames.has(right.id);
-
-          if (leftIsFollowed !== rightIsFollowed) {
-            return leftIsFollowed ? -1 : 1;
-          }
-
-          return left.name.localeCompare(right.name);
-        });
+        }));
 
       return {
         data,
@@ -113,7 +102,7 @@ function Explore() {
         title: group.name,
       };
     }).filter(section => section.data.length > 0);
-  }, [categories, followedCategoryNames, searchQuery]);
+  }, [categories, searchQuery]);
 
   return (
     <View style={[styles.container, { paddingTop: insets.top + 16 }]}>

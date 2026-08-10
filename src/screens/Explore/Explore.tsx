@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
 import {
   ActivityIndicator,
-  FlatList,
   Pressable,
+  SectionList,
   StyleSheet,
   Text,
   TextInput,
@@ -10,19 +10,30 @@ import {
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import categoryGroupsData from '@/assets/db/categories.json';
 import {
   getQuoteCategories,
   type QuoteCategory,
 } from '@/database/quotes';
 import { useFollowedCategories } from '@/hooks/useFollowedCategories';
+import { colors } from '@/theme/colors';
 
-function formatCategoryName(name: string): string {
-  return name
-    .split(/[\s-_]+/)
-    .filter(Boolean)
-    .map(word => word[0]?.toUpperCase() + word.slice(1))
-    .join(' ');
-}
+type CategoryDefinition = {
+  id: string;
+  name: string;
+};
+
+type CategoryGroup = {
+  categories: CategoryDefinition[];
+  id: string;
+  name: string;
+};
+
+type CategoryListItem = CategoryDefinition & {
+  quoteCount: number;
+};
+
+const CATEGORY_GROUPS = categoryGroupsData as CategoryGroup[];
 
 function Explore() {
   const insets = useSafeAreaInsets();
@@ -65,23 +76,43 @@ function Explore() {
     };
   }, []);
 
-  const visibleCategories = useMemo(() => {
+  const visibleSections = useMemo(() => {
     const normalizedQuery = searchQuery.trim().toLocaleLowerCase();
+    const quoteCounts = new Map(
+      categories.map(category => [category.id, category.quoteCount]),
+    );
 
-    return categories
-      .filter(category =>
-        category.name.toLocaleLowerCase().includes(normalizedQuery),
-      )
-      .sort((left, right) => {
-        const leftIsFollowed = followedCategoryNames.has(left.name);
-        const rightIsFollowed = followedCategoryNames.has(right.name);
+    return CATEGORY_GROUPS.map(group => {
+      const groupMatches = group.name
+        .toLocaleLowerCase()
+        .includes(normalizedQuery);
+      const data: CategoryListItem[] = group.categories
+        .filter(
+          category =>
+            groupMatches ||
+            category.name.toLocaleLowerCase().includes(normalizedQuery),
+        )
+        .map(category => ({
+          ...category,
+          quoteCount: quoteCounts.get(category.id) ?? 0,
+        }))
+        .sort((left, right) => {
+          const leftIsFollowed = followedCategoryNames.has(left.id);
+          const rightIsFollowed = followedCategoryNames.has(right.id);
 
-        if (leftIsFollowed !== rightIsFollowed) {
-          return leftIsFollowed ? -1 : 1;
-        }
+          if (leftIsFollowed !== rightIsFollowed) {
+            return leftIsFollowed ? -1 : 1;
+          }
 
-        return left.name.localeCompare(right.name);
-      });
+          return left.name.localeCompare(right.name);
+        });
+
+      return {
+        data,
+        id: group.id,
+        title: group.name,
+      };
+    }).filter(section => section.data.length > 0);
   }, [categories, followedCategoryNames, searchQuery]);
 
   return (
@@ -97,9 +128,10 @@ function Explore() {
           autoCapitalize="none"
           autoCorrect={false}
           clearButtonMode="while-editing"
+          keyboardAppearance="dark"
           onChangeText={setSearchQuery}
           placeholder="Search categories"
-          placeholderTextColor="#777777"
+          placeholderTextColor={colors.textMuted}
           returnKeyType="search"
           style={styles.searchInput}
           value={searchQuery}
@@ -111,22 +143,20 @@ function Explore() {
       ) : error ? (
         <Text style={styles.centeredStateText}>{error}</Text>
       ) : (
-        <FlatList
+        <SectionList
           contentContainerStyle={styles.listContent}
-          data={visibleCategories}
           keyboardShouldPersistTaps="handled"
-          keyExtractor={category => category.name}
+          keyExtractor={category => category.id}
           ListEmptyComponent={
             <Text style={styles.centeredStateText}>No categories found.</Text>
           }
           renderItem={({ item }) => {
-            const isFollowing = isFollowingCategory(item.name);
-            const displayName = formatCategoryName(item.name);
+            const isFollowing = isFollowingCategory(item.id);
 
             return (
               <View style={styles.categoryRow}>
                 <View style={styles.categoryDetails}>
-                  <Text style={styles.categoryName}>{displayName}</Text>
+                  <Text style={styles.categoryName}>{item.name}</Text>
                   <Text style={styles.quoteCount}>
                     {item.quoteCount}{' '}
                     {item.quoteCount === 1 ? 'quote' : 'quotes'}
@@ -136,10 +166,10 @@ function Explore() {
                 <Pressable
                   accessibilityLabel={`${
                     isFollowing ? 'Unfollow' : 'Follow'
-                  } ${displayName}`}
+                  } ${item.name}`}
                   accessibilityRole="button"
                   accessibilityState={{ selected: isFollowing }}
-                  onPress={() => toggleFollowedCategory(item.name)}
+                  onPress={() => toggleFollowedCategory(item.id)}
                   style={({ pressed }) => [
                     styles.followButton,
                     isFollowing && styles.followingButton,
@@ -158,7 +188,14 @@ function Explore() {
               </View>
             );
           }}
+          renderSectionHeader={({ section }) => (
+            <View style={styles.sectionHeader}>
+              <Text style={styles.sectionTitle}>{section.title}</Text>
+            </View>
+          )}
+          sections={visibleSections}
           showsVerticalScrollIndicator={false}
+          stickySectionHeadersEnabled={false}
         />
       )}
     </View>
@@ -171,13 +208,13 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   categoryName: {
-    color: '#171717',
+    color: colors.textPrimary,
     fontFamily: 'Manrope-SemiBold',
     fontSize: 17,
   },
   categoryRow: {
     alignItems: 'center',
-    borderBottomColor: '#E8E8E8',
+    borderBottomColor: colors.border,
     borderBottomWidth: StyleSheet.hairlineWidth,
     flexDirection: 'row',
     gap: 16,
@@ -188,18 +225,18 @@ const styles = StyleSheet.create({
     marginTop: 48,
   },
   centeredStateText: {
-    color: '#707070',
+    color: colors.textSecondary,
     marginTop: 48,
     textAlign: 'center',
   },
   container: {
-    backgroundColor: '#FAFAFA',
+    backgroundColor: colors.background,
     flex: 1,
   },
   followButton: {
     alignItems: 'center',
-    backgroundColor: '#171717',
-    borderColor: '#171717',
+    backgroundColor: colors.accent,
+    borderColor: colors.accent,
     borderRadius: 18,
     borderWidth: 1,
     justifyContent: 'center',
@@ -208,7 +245,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   followButtonText: {
-    color: '#FFFFFF',
+    color: colors.accentText,
     fontFamily: 'Manrope-SemiBold',
     fontSize: 14,
   },
@@ -216,7 +253,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'transparent',
   },
   followingButtonText: {
-    color: '#171717',
+    color: colors.accent,
   },
   header: {
     gap: 8,
@@ -230,28 +267,40 @@ const styles = StyleSheet.create({
     opacity: 0.65,
   },
   quoteCount: {
-    color: '#707070',
+    color: colors.textSecondary,
     fontFamily: 'Manrope-Regular',
     fontSize: 14,
   },
   searchInput: {
-    backgroundColor: '#EFEFEF',
+    backgroundColor: colors.surface,
     borderRadius: 14,
-    color: '#171717',
+    color: colors.textPrimary,
     fontFamily: 'Manrope-Regular',
     fontSize: 16,
     height: 48,
     marginTop: 14,
     paddingHorizontal: 16,
   },
+  sectionHeader: {
+    backgroundColor: colors.background,
+    paddingBottom: 6,
+    paddingTop: 26,
+  },
+  sectionTitle: {
+    color: colors.textMuted,
+    fontFamily: 'Manrope-SemiBold',
+    fontSize: 13,
+    letterSpacing: 0.6,
+    textTransform: 'uppercase',
+  },
   subtitle: {
-    color: '#666666',
+    color: colors.textSecondary,
     fontFamily: 'Manrope-Regular',
     fontSize: 15,
     lineHeight: 21,
   },
   title: {
-    color: '#111111',
+    color: colors.textPrimary,
     fontFamily: 'Manrope-ExtraBold',
     fontSize: 32,
     lineHeight: 38,

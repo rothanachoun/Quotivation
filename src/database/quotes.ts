@@ -17,7 +17,7 @@ export type QuoteRow = {
 };
 
 export type QuoteCategory = {
-  name: string;
+  id: string;
   quoteCount: number;
 };
 
@@ -36,7 +36,7 @@ export async function getQuoteCategories(): Promise<QuoteCategory[]> {
   );
 
   return (result.rows as QuoteCategoryRow[]).map(row => ({
-    name: row.category,
+    id: row.category,
     quoteCount: Number(row.quote_count),
   }));
 }

@@ -80,10 +80,11 @@ Quotes are edited locally and bundled with the app. The app does not need a quot
 ### Important files
 
 ```text
-src/assets/db/quotes.json    Editable quote source data
-src/assets/db/version.json   Bundled database version
-src/assets/db/quotes.sqlite  Generated database bundled with the app
-scripts/import-quotes.mjs    JSON-to-SQLite importer
+src/assets/db/categories.json  Canonical category groups and IDs
+src/assets/db/quotes.json      Editable quote source data
+src/assets/db/version.json     Bundled database version
+src/assets/db/quotes.sqlite    Generated database bundled with the app
+scripts/import-quotes.mjs      JSON-to-SQLite importer
 ```
 
 Edit `quotes.json`, not `quotes.sqlite` directly. Each quote can contain text, category, author, text style, styled segments, a quote symbol, background settings, and an optional image URL.
@@ -99,18 +100,15 @@ Use the canonical category ID in the quote's `category` field:
   "id": "quote-example",
   "type": "text",
   "text": "Small steps still move you forward.",
-  "category": "motivation-inspiration.keep-going"
+  "category": "keep-going"
 }
 ```
 
-Category IDs include their group ID because some display names occur in more than one group. For example, these are separate categories:
+The quote stores only the category ID; it does not store the group ID. Every category ID must therefore be globally unique, and each category belongs to only one group.
 
-```text
-personal-growth.focus
-work-productivity.focus
-```
+Group IDs are used only to organize categories in Explore. They are not written into a quote's `category` field. Do not duplicate a category in another group; assign it to the single group that best represents its primary purpose.
 
-Do not invent a new category ID while adding quotes. Add it to this taxonomy first so content and user-follow preferences remain consistent.
+`categories.json` is the source of truth for this taxonomy and for the Explore screen. Do not invent a new category ID while adding quotes. Add it to `categories.json` and this reference first so content and user-follow preferences remain consistent.
 
 #### 1. Motivation & Inspiration
 
@@ -118,12 +116,12 @@ Group ID: `motivation-inspiration`
 
 | Category | Category ID |
 | --- | --- |
-| Keep Going | `motivation-inspiration.keep-going` |
-| Starting Again | `motivation-inspiration.starting-again` |
-| Difficult Days | `motivation-inspiration.difficult-days` |
-| Positive Thinking | `motivation-inspiration.positive-thinking` |
-| Never Give Up | `motivation-inspiration.never-give-up` |
-| Courage | `motivation-inspiration.courage` |
+| Keep Going | `keep-going` |
+| Starting Again | `starting-again` |
+| Difficult Days | `difficult-days` |
+| Positive Thinking | `positive-thinking` |
+| Never Give Up | `never-give-up` |
+| Courage | `courage` |
 
 #### 2. Personal Growth
 
@@ -131,12 +129,11 @@ Group ID: `personal-growth`
 
 | Category | Category ID |
 | --- | --- |
-| Personal Growth | `personal-growth.personal-growth` |
-| Confidence | `personal-growth.confidence` |
-| Discipline | `personal-growth.discipline` |
-| Consistency | `personal-growth.consistency` |
-| Habits | `personal-growth.habits` |
-| Focus | `personal-growth.focus` |
+| Personal Growth | `personal-growth` |
+| Confidence | `confidence` |
+| Discipline | `discipline` |
+| Consistency | `consistency` |
+| Habits | `habits` |
 
 #### 3. Self-Worth
 
@@ -144,11 +141,11 @@ Group ID: `self-worth`
 
 | Category | Category ID |
 | --- | --- |
-| Self-Love | `self-worth.self-love` |
-| Self-Respect | `self-worth.self-respect` |
-| Boundaries | `self-worth.boundaries` |
-| Knowing Your Worth | `self-worth.knowing-your-worth` |
-| Choosing Yourself | `self-worth.choosing-yourself` |
+| Self-Love | `self-love` |
+| Self-Respect | `self-respect` |
+| Boundaries | `boundaries` |
+| Knowing Your Worth | `knowing-your-worth` |
+| Choosing Yourself | `choosing-yourself` |
 
 #### 4. Healing & Hard Times
 
@@ -156,12 +153,12 @@ Group ID: `healing-hard-times`
 
 | Category | Category ID |
 | --- | --- |
-| Healing | `healing-hard-times.healing` |
-| Moving On | `healing-hard-times.moving-on` |
-| Letting Go | `healing-hard-times.letting-go` |
-| Heartbreak | `healing-hard-times.heartbreak` |
-| Walking Away | `healing-hard-times.walking-away` |
-| Starting Over | `healing-hard-times.starting-over` |
+| Healing | `healing` |
+| Moving On | `moving-on` |
+| Letting Go | `letting-go` |
+| Heartbreak | `heartbreak` |
+| Walking Away | `walking-away` |
+| Starting Over | `starting-over` |
 
 #### 5. Calm & Inner Peace
 
@@ -169,12 +166,12 @@ Group ID: `calm-inner-peace`
 
 | Category | Category ID |
 | --- | --- |
-| Overthinking | `calm-inner-peace.overthinking` |
-| Inner Peace | `calm-inner-peace.inner-peace` |
-| Calm | `calm-inner-peace.calm` |
-| Rest | `calm-inner-peace.rest` |
-| Mindfulness | `calm-inner-peace.mindfulness` |
-| Gratitude | `calm-inner-peace.gratitude` |
+| Overthinking | `overthinking` |
+| Inner Peace | `inner-peace` |
+| Calm | `calm` |
+| Rest | `rest` |
+| Mindfulness | `mindfulness` |
+| Gratitude | `gratitude` |
 
 #### 6. Love & Relationships
 
@@ -182,12 +179,11 @@ Group ID: `love-relationships`
 
 | Category | Category ID |
 | --- | --- |
-| Healthy Love | `love-relationships.healthy-love` |
-| Breakups | `love-relationships.breakups` |
-| Friendship | `love-relationships.friendship` |
-| Trust | `love-relationships.trust` |
-| Relationships | `love-relationships.relationships` |
-| Heartbreak | `love-relationships.heartbreak` |
+| Healthy Love | `healthy-love` |
+| Breakups | `breakups` |
+| Friendship | `friendship` |
+| Trust | `trust` |
+| Relationships | `relationships` |
 
 #### 7. Work & Productivity
 
@@ -195,12 +191,10 @@ Group ID: `work-productivity`
 
 | Category | Category ID |
 | --- | --- |
-| Focus | `work-productivity.focus` |
-| Discipline | `work-productivity.discipline` |
-| Consistency | `work-productivity.consistency` |
-| Productivity | `work-productivity.productivity` |
-| Ambition | `work-productivity.ambition` |
-| Success | `work-productivity.success` |
+| Focus | `focus` |
+| Productivity | `productivity` |
+| Ambition | `ambition` |
+| Success | `success` |
 
 #### 8. Life & Wisdom
 
@@ -208,12 +202,11 @@ Group ID: `life-wisdom`
 
 | Category | Category ID |
 | --- | --- |
-| Life Lessons | `life-wisdom.life-lessons` |
-| Change | `life-wisdom.change` |
-| Time | `life-wisdom.time` |
-| Philosophy | `life-wisdom.philosophy` |
-| Gratitude | `life-wisdom.gratitude` |
-| Purpose | `life-wisdom.purpose` |
+| Life Lessons | `life-lessons` |
+| Change | `change` |
+| Time | `time` |
+| Philosophy | `philosophy` |
+| Purpose | `purpose` |
 
 ### Update the quotes
 
@@ -222,7 +215,7 @@ Group ID: `life-wisdom`
 
 ```json
 {
-  "version": 2
+  "version": 3
 }
 ```
 
@@ -244,7 +237,7 @@ Or, for Android:
 npm run android
 ```
 
-The import command validates the JSON, rejects duplicate quote IDs, replaces the existing rows in one transaction, serializes nested objects into the JSON database columns, generates a stable `shuffle_key` for each quote, and stamps the version into SQLite using `PRAGMA user_version`.
+The import command validates both JSON files, rejects duplicate or unknown category IDs, rejects duplicate quote IDs, replaces the existing rows in one transaction, serializes nested objects into the JSON database columns, generates a stable `shuffle_key` for each quote, and stamps the version into SQLite using `PRAGMA user_version`.
 
 Quote IDs must remain stable after release. Loved and recently viewed quotes are stored locally by ID, so changing an existing ID makes it appear to the app as a new quote.
 

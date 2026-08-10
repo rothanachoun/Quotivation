@@ -13,6 +13,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useLovedQuotes } from '@/hooks/useLovedQuotes';
 import { useFollowedCategories } from '@/hooks/useFollowedCategories';
 import { useQuoteHistory } from '@/hooks/useQuoteHistory';
+import { colors } from '@/theme/colors';
 
 import QuotePage from './components/QuotePage';
 import { useQuotes } from './hooks/useQuotes';
@@ -109,6 +110,8 @@ function Home() {
       )}
       {canRenderFeed && (
         <Animated.FlatList
+          automaticallyAdjustContentInsets={false}
+          contentInsetAdjustmentBehavior="never"
           data={quotes}
           decelerationRate="fast"
           disableIntervalMomentum
@@ -131,6 +134,7 @@ function Home() {
           renderItem={renderItem}
           scrollEventThrottle={16}
           showsVerticalScrollIndicator={false}
+          style={styles.feed}
           windowSize={3}
           viewabilityConfig={viewabilityConfig}
         />
@@ -147,7 +151,7 @@ const styles = StyleSheet.create({
     top: '50%',
   },
   centeredStateText: {
-    color: '#555555',
+    color: colors.textSecondary,
     left: 24,
     position: 'absolute',
     right: 24,
@@ -155,6 +159,11 @@ const styles = StyleSheet.create({
     top: '50%',
   },
   container: {
+    backgroundColor: colors.background,
+    flex: 1,
+  },
+  feed: {
+    backgroundColor: colors.background,
     flex: 1,
   },
 });

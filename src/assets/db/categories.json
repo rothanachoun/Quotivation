@@ -1,0 +1,92 @@
+[
+  {
+    "id": "motivation-inspiration",
+    "name": "Motivation & Inspiration",
+    "categories": [
+      { "id": "keep-going", "name": "Keep Going" },
+      { "id": "starting-again", "name": "Starting Again" },
+      { "id": "difficult-days", "name": "Difficult Days" },
+      { "id": "positive-thinking", "name": "Positive Thinking" },
+      { "id": "never-give-up", "name": "Never Give Up" },
+      { "id": "courage", "name": "Courage" }
+    ]
+  },
+  {
+    "id": "personal-growth",
+    "name": "Personal Growth",
+    "categories": [
+      { "id": "personal-growth", "name": "Personal Growth" },
+      { "id": "confidence", "name": "Confidence" },
+      { "id": "discipline", "name": "Discipline" },
+      { "id": "consistency", "name": "Consistency" },
+      { "id": "habits", "name": "Habits" }
+    ]
+  },
+  {
+    "id": "self-worth",
+    "name": "Self-Worth",
+    "categories": [
+      { "id": "self-love", "name": "Self-Love" },
+      { "id": "self-respect", "name": "Self-Respect" },
+      { "id": "boundaries", "name": "Boundaries" },
+      { "id": "knowing-your-worth", "name": "Knowing Your Worth" },
+      { "id": "choosing-yourself", "name": "Choosing Yourself" }
+    ]
+  },
+  {
+    "id": "healing-hard-times",
+    "name": "Healing & Hard Times",
+    "categories": [
+      { "id": "healing", "name": "Healing" },
+      { "id": "moving-on", "name": "Moving On" },
+      { "id": "letting-go", "name": "Letting Go" },
+      { "id": "heartbreak", "name": "Heartbreak" },
+      { "id": "walking-away", "name": "Walking Away" },
+      { "id": "starting-over", "name": "Starting Over" }
+    ]
+  },
+  {
+    "id": "calm-inner-peace",
+    "name": "Calm & Inner Peace",
+    "categories": [
+      { "id": "overthinking", "name": "Overthinking" },
+      { "id": "inner-peace", "name": "Inner Peace" },
+      { "id": "calm", "name": "Calm" },
+      { "id": "rest", "name": "Rest" },
+      { "id": "mindfulness", "name": "Mindfulness" },
+      { "id": "gratitude", "name": "Gratitude" }
+    ]
+  },
+  {
+    "id": "love-relationships",
+    "name": "Love & Relationships",
+    "categories": [
+      { "id": "healthy-love", "name": "Healthy Love" },
+      { "id": "breakups", "name": "Breakups" },
+      { "id": "friendship", "name": "Friendship" },
+      { "id": "trust", "name": "Trust" },
+      { "id": "relationships", "name": "Relationships" }
+    ]
+  },
+  {
+    "id": "work-productivity",
+    "name": "Work & Productivity",
+    "categories": [
+      { "id": "focus", "name": "Focus" },
+      { "id": "productivity", "name": "Productivity" },
+      { "id": "ambition", "name": "Ambition" },
+      { "id": "success", "name": "Success" }
+    ]
+  },
+  {
+    "id": "life-wisdom",
+    "name": "Life & Wisdom",
+    "categories": [
+      { "id": "life-lessons", "name": "Life Lessons" },
+      { "id": "change", "name": "Change" },
+      { "id": "time", "name": "Time" },
+      { "id": "philosophy", "name": "Philosophy" },
+      { "id": "purpose", "name": "Purpose" }
+    ]
+  }
+]

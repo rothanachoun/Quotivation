@@ -3,6 +3,6 @@ export const enum Paths {
   Startup = 'startup',
   Search = 'search',
   Home = 'home',
-  Setting = 'setting',
+  Settings = 'settings',
   Profile = 'profile'
 }

@@ -5,4 +5,5 @@ export { default as ProfileIcon } from './ProfileIcon';
 export { default as QuoteIcon } from './QuoteIcon';
 export type { QuoteIconName } from './QuoteIcon';
 export { default as ShareIcon } from './ShareIcon';
+export { default as SettingsIcon } from './SettingsIcon';
 export type { IconProps } from './types';

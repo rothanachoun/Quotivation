@@ -5,6 +5,9 @@ import { fileURLToPath } from 'node:url';
 const quotesPath = fileURLToPath(
   new URL('../src/assets/db/quotes.json', import.meta.url),
 );
+const categoriesPath = fileURLToPath(
+  new URL('../src/assets/db/categories.json', import.meta.url),
+);
 const databasePath = fileURLToPath(
   new URL('../src/assets/db/quotes.sqlite', import.meta.url),
 );
@@ -13,10 +16,35 @@ const versionPath = fileURLToPath(
 );
 
 const quotes = JSON.parse(readFileSync(quotesPath, 'utf8'));
+const categoryGroups = JSON.parse(readFileSync(categoriesPath, 'utf8'));
 const databaseVersion = JSON.parse(readFileSync(versionPath, 'utf8')).version;
 
 if (!Array.isArray(quotes)) {
   throw new TypeError('quotes.json must contain an array');
+}
+
+if (!Array.isArray(categoryGroups)) {
+  throw new TypeError('categories.json must contain an array');
+}
+
+const categoryIds = new Set();
+
+for (const group of categoryGroups) {
+  if (!group.id || !group.name || !Array.isArray(group.categories)) {
+    throw new Error('Every category group requires id, name, and categories');
+  }
+
+  for (const category of group.categories) {
+    if (!category.id || !category.name) {
+      throw new Error(`A category in group ${group.id} requires id and name`);
+    }
+
+    if (categoryIds.has(category.id)) {
+      throw new Error(`Duplicate category id: ${category.id}`);
+    }
+
+    categoryIds.add(category.id);
+  }
 }
 
 if (!Number.isInteger(databaseVersion) || databaseVersion < 1) {
@@ -66,6 +94,12 @@ const statements = quotes.map((quote, index) => {
 
   if (quote.type !== 'text' && quote.type !== 'image') {
     throw new Error(`Quote ${quote.id} has an invalid type`);
+  }
+
+  if (!categoryIds.has(quote.category)) {
+    throw new Error(
+      `Quote ${quote.id} uses unknown category: ${quote.category}`,
+    );
   }
 
   if (ids.has(quote.id)) {

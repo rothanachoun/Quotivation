@@ -1,4 +1,4 @@
-import { NavigationContainer } from '@react-navigation/native';
+import { DarkTheme, NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import type { ImageRequireSource } from 'react-native';
@@ -6,11 +6,22 @@ import VectorImage from 'react-native-vector-image';
 
 import { Paths } from '@/navigation/paths';
 import type { RootStackParamList } from '@/navigation/types';
+import { colors } from '@/theme/colors';
 
-import { Explore, Home, Profile } from '@/screens';
+import { Explore, Home, Profile, Settings } from '@/screens';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator<RootStackParamList>();
+
+const APP_BACKGROUND_COLOR = colors.background;
+const navigationTheme = {
+  ...DarkTheme,
+  colors: {
+    ...DarkTheme.colors,
+    background: APP_BACKGROUND_COLOR,
+    card: APP_BACKGROUND_COLOR,
+  },
+};
 
 function resolveIcon(source: ImageRequireSource) {
   const icon = VectorImage.resolveAssetSource(source);
@@ -36,8 +47,37 @@ const profileIcon = resolveIcon(
 
 function ExploreStackNavigator() {
   return (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
+    <Stack.Navigator
+      screenOptions={{
+        contentStyle: { backgroundColor: APP_BACKGROUND_COLOR },
+        headerShown: false,
+      }}
+    >
       <Stack.Screen name={Paths.Explore} component={Explore} />
+    </Stack.Navigator>
+  );
+}
+
+function ProfileStackNavigator() {
+  return (
+    <Stack.Navigator
+      screenOptions={{
+        contentStyle: { backgroundColor: APP_BACKGROUND_COLOR },
+        headerShadowVisible: false,
+        headerStyle: { backgroundColor: APP_BACKGROUND_COLOR },
+        headerTintColor: colors.textPrimary,
+      }}
+    >
+      <Stack.Screen
+        name={Paths.Profile}
+        component={Profile}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name={Paths.Settings}
+        component={Settings}
+        options={{ title: 'Settings' }}
+      />
     </Stack.Navigator>
   );
 }
@@ -45,8 +85,12 @@ function ExploreStackNavigator() {
 function ApplicationNavigator() {
 
   return (
-    <NavigationContainer>
-      <Tab.Navigator>
+    <NavigationContainer theme={navigationTheme}>
+      <Tab.Navigator
+        screenOptions={{
+          sceneStyle: { backgroundColor: APP_BACKGROUND_COLOR },
+        }}
+      >
         <Tab.Screen
           name={Paths.Home}
           component={Home}
@@ -72,7 +116,7 @@ function ApplicationNavigator() {
         />
         <Tab.Screen
           name={Paths.Profile}
-          component={Profile}
+          component={ProfileStackNavigator}
           options={{
             tabBarLabel: 'Profile',
             tabBarIcon: {

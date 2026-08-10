@@ -3,7 +3,7 @@
     "id": "begin",
     "type": "text",
     "text": "The secret of getting ahead is getting started.",
-    "category": "motivation",
+    "category": "starting-again",
     "author": {
       "name": "Mark Twain",
       "style": { "color": "#FFFFFF", "fontFamily": "Manrope-SemiBold", "fontSize": 17, "lineHeight": 24, "textAlign": "left" }
@@ -41,7 +41,7 @@
     "id": "direction",
     "type": "text",
     "text": "It is never too late to be what you might have been.",
-    "category": "inspiration",
+    "category": "starting-over",
     "author": {
       "name": "George Eliot",
       "style": { "color": "#F7E9FF", "fontFamily": "CormorantGaramond-Italic", "fontSize": 19, "lineHeight": 26, "textAlign": "center" }
@@ -61,7 +61,7 @@
     "id": "today",
     "type": "text",
     "text": "The future depends on what you do today.",
-    "category": "motivation",
+    "category": "focus",
     "author": {
       "name": "Mahatma Gandhi",
       "style": { "color": "#E9FFF8", "fontFamily": "Lora-Italic", "fontSize": 17, "lineHeight": 24, "textAlign": "right" }
@@ -81,7 +81,7 @@
     "id": "progress",
     "type": "text",
     "text": "Great things are done by a series of small things brought together.",
-    "category": "progress",
+    "category": "consistency",
     "author": {
       "name": "Vincent van Gogh",
       "style": { "color": "#FFF2D9", "fontFamily": "PlayfairDisplay-Italic", "fontSize": 17, "lineHeight": 24, "textAlign": "left" }
@@ -102,7 +102,7 @@
     "id": "difference",
     "type": "text",
     "text": "Act as if what you do makes a difference. It does.",
-    "category": "action",
+    "category": "courage",
     "author": {
       "name": "William James",
       "style": { "color": "#F2F7FF", "fontFamily": "Manrope-SemiBold", "fontSize": 17, "lineHeight": 24, "textAlign": "left" }
@@ -164,7 +164,7 @@
     "id": "through",
     "type": "text",
     "text": "The best way out is always through.",
-    "category": "resilience",
+    "category": "difficult-days",
     "author": {
       "name": "Robert Frost",
       "style": { "color": "#EEF2FF", "fontFamily": "Manrope-SemiBold", "fontSize": 17, "lineHeight": 24, "textAlign": "left" }
@@ -184,7 +184,7 @@
     "id": "possible",
     "type": "text",
     "text": "It always seems impossible until it is done.",
-    "category": "achievement",
+    "category": "positive-thinking",
     "author": {
       "name": "Nelson Mandela",
       "style": { "color": "#F5FFF9", "fontFamily": "PlayfairDisplay-Italic", "fontSize": 18, "lineHeight": 25, "textAlign": "center" }

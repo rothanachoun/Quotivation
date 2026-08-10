@@ -88,6 +88,133 @@ scripts/import-quotes.mjs    JSON-to-SQLite importer
 
 Edit `quotes.json`, not `quotes.sqlite` directly. Each quote can contain text, category, author, text style, styled segments, a quote symbol, background settings, and an optional image URL.
 
+### Content taxonomy
+
+Each quote must have exactly one specific category. Choose the category that best represents the quote instead of assigning the same quote to several categories.
+
+Use the canonical category ID in the quote's `category` field:
+
+```json
+{
+  "id": "quote-example",
+  "type": "text",
+  "text": "Small steps still move you forward.",
+  "category": "motivation-inspiration.keep-going"
+}
+```
+
+Category IDs include their group ID because some display names occur in more than one group. For example, these are separate categories:
+
+```text
+personal-growth.focus
+work-productivity.focus
+```
+
+Do not invent a new category ID while adding quotes. Add it to this taxonomy first so content and user-follow preferences remain consistent.
+
+#### 1. Motivation & Inspiration
+
+Group ID: `motivation-inspiration`
+
+| Category | Category ID |
+| --- | --- |
+| Keep Going | `motivation-inspiration.keep-going` |
+| Starting Again | `motivation-inspiration.starting-again` |
+| Difficult Days | `motivation-inspiration.difficult-days` |
+| Positive Thinking | `motivation-inspiration.positive-thinking` |
+| Never Give Up | `motivation-inspiration.never-give-up` |
+| Courage | `motivation-inspiration.courage` |
+
+#### 2. Personal Growth
+
+Group ID: `personal-growth`
+
+| Category | Category ID |
+| --- | --- |
+| Personal Growth | `personal-growth.personal-growth` |
+| Confidence | `personal-growth.confidence` |
+| Discipline | `personal-growth.discipline` |
+| Consistency | `personal-growth.consistency` |
+| Habits | `personal-growth.habits` |
+| Focus | `personal-growth.focus` |
+
+#### 3. Self-Worth
+
+Group ID: `self-worth`
+
+| Category | Category ID |
+| --- | --- |
+| Self-Love | `self-worth.self-love` |
+| Self-Respect | `self-worth.self-respect` |
+| Boundaries | `self-worth.boundaries` |
+| Knowing Your Worth | `self-worth.knowing-your-worth` |
+| Choosing Yourself | `self-worth.choosing-yourself` |
+
+#### 4. Healing & Hard Times
+
+Group ID: `healing-hard-times`
+
+| Category | Category ID |
+| --- | --- |
+| Healing | `healing-hard-times.healing` |
+| Moving On | `healing-hard-times.moving-on` |
+| Letting Go | `healing-hard-times.letting-go` |
+| Heartbreak | `healing-hard-times.heartbreak` |
+| Walking Away | `healing-hard-times.walking-away` |
+| Starting Over | `healing-hard-times.starting-over` |
+
+#### 5. Calm & Inner Peace
+
+Group ID: `calm-inner-peace`
+
+| Category | Category ID |
+| --- | --- |
+| Overthinking | `calm-inner-peace.overthinking` |
+| Inner Peace | `calm-inner-peace.inner-peace` |
+| Calm | `calm-inner-peace.calm` |
+| Rest | `calm-inner-peace.rest` |
+| Mindfulness | `calm-inner-peace.mindfulness` |
+| Gratitude | `calm-inner-peace.gratitude` |
+
+#### 6. Love & Relationships
+
+Group ID: `love-relationships`
+
+| Category | Category ID |
+| --- | --- |
+| Healthy Love | `love-relationships.healthy-love` |
+| Breakups | `love-relationships.breakups` |
+| Friendship | `love-relationships.friendship` |
+| Trust | `love-relationships.trust` |
+| Relationships | `love-relationships.relationships` |
+| Heartbreak | `love-relationships.heartbreak` |
+
+#### 7. Work & Productivity
+
+Group ID: `work-productivity`
+
+| Category | Category ID |
+| --- | --- |
+| Focus | `work-productivity.focus` |
+| Discipline | `work-productivity.discipline` |
+| Consistency | `work-productivity.consistency` |
+| Productivity | `work-productivity.productivity` |
+| Ambition | `work-productivity.ambition` |
+| Success | `work-productivity.success` |
+
+#### 8. Life & Wisdom
+
+Group ID: `life-wisdom`
+
+| Category | Category ID |
+| --- | --- |
+| Life Lessons | `life-wisdom.life-lessons` |
+| Change | `life-wisdom.change` |
+| Time | `life-wisdom.time` |
+| Philosophy | `life-wisdom.philosophy` |
+| Gratitude | `life-wisdom.gratitude` |
+| Purpose | `life-wisdom.purpose` |
+
 ### Update the quotes
 
 1. Edit `src/assets/db/quotes.json`.

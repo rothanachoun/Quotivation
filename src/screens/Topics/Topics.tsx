@@ -1,5 +1,8 @@
-import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useEffect, useMemo, useState } from 'react';
+import {
+  isLiquidGlassSupported,
+  LiquidGlassView,
+} from '@callstack/liquid-glass';
 import {
   ActivityIndicator,
   Pressable,
@@ -9,26 +12,31 @@ import {
   TextInput,
   View,
 } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-
 import categoryGroupsData from '@/assets/db/categories.json';
 import { getQuoteCategories, type QuoteCategory } from '@/database/quotes';
-import { Paths } from '@/navigation/paths';
-import type { RootStackParamList } from '@/navigation/types';
+import { useFollowedCategories } from '@/hooks/useFollowedCategories';
 import { colors } from '@/theme/colors';
 
-type CategoryDefinition = { id: string; name: string };
+type CategoryDefinition = {
+  id: string;
+  name: string;
+};
+
 type CategoryGroup = {
   categories: CategoryDefinition[];
   id: string;
   name: string;
 };
-type ExploreProps = NativeStackScreenProps<RootStackParamList, Paths.Explore>;
+
+type CategoryListItem = CategoryDefinition & {
+  quoteCount: number;
+};
 
 const CATEGORY_GROUPS = categoryGroupsData as CategoryGroup[];
 
-function Explore({ navigation }: ExploreProps) {
-  const insets = useSafeAreaInsets();
+function Topics() {
+  const { isFollowingCategory, toggleFollowedCategory } =
+    useFollowedCategories();
   const [categories, setCategories] = useState<QuoteCategory[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -39,7 +47,9 @@ function Explore({ navigation }: ExploreProps) {
 
     getQuoteCategories()
       .then(result => {
-        if (!cancelled) setCategories(result);
+        if (!cancelled) {
+          setCategories(result);
+        }
       })
       .catch(loadError => {
         if (!cancelled) {
@@ -51,7 +61,9 @@ function Explore({ navigation }: ExploreProps) {
         }
       })
       .finally(() => {
-        if (!cancelled) setIsLoading(false);
+        if (!cancelled) {
+          setIsLoading(false);
+        }
       });
 
     return () => {
@@ -65,29 +77,36 @@ function Explore({ navigation }: ExploreProps) {
       categories.map(category => [category.id, category.quoteCount]),
     );
 
-    return CATEGORY_GROUPS.map(group => ({
-      data: group.categories
+    return CATEGORY_GROUPS.map(group => {
+      const groupMatches = group.name
+        .toLocaleLowerCase()
+        .includes(normalizedQuery);
+      const data: CategoryListItem[] = group.categories
         .filter(
           category =>
-            group.name.toLocaleLowerCase().includes(normalizedQuery) ||
+            groupMatches ||
             category.name.toLocaleLowerCase().includes(normalizedQuery),
         )
         .map(category => ({
           ...category,
           quoteCount: quoteCounts.get(category.id) ?? 0,
-        })),
-      id: group.id,
-      title: group.name,
-    })).filter(section => section.data.length > 0);
+        }));
+
+      return {
+        data,
+        id: group.id,
+        title: group.name,
+      };
+    }).filter(section => section.data.length > 0);
   }, [categories, searchQuery]);
 
   return (
-    <View style={[styles.container, { paddingTop: insets.top + 16 }]}>
+    <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>Explore</Text>
         <Text style={styles.subtitle}>
-          Choose a category and discover quotes for the moment.
+          Follow categories to personalize your quotes.
         </Text>
+
         <TextInput
           accessibilityLabel="Search categories"
           autoCapitalize="none"
@@ -115,32 +134,56 @@ function Explore({ navigation }: ExploreProps) {
           ListEmptyComponent={
             <Text style={styles.centeredStateText}>No categories found.</Text>
           }
-          renderItem={({ item }) => (
-            <Pressable
-              accessibilityHint="Opens quotes in this category"
-              accessibilityRole="button"
-              onPress={() =>
-                navigation.navigate(Paths.Category, {
-                  categoryId: item.id,
-                  categoryName: item.name,
-                })
-              }
-              style={({ pressed }) => [
-                styles.categoryRow,
-                pressed && styles.pressedRow,
-              ]}
-            >
-              <View style={styles.categoryDetails}>
-                <Text style={styles.categoryName}>{item.name}</Text>
-                <Text style={styles.quoteCount}>
-                  {item.quoteCount} {item.quoteCount === 1 ? 'quote' : 'quotes'}
-                </Text>
+          renderItem={({ item }) => {
+            const isFollowing = isFollowingCategory(item.id);
+
+            return (
+              <View style={styles.categoryRow}>
+                <View style={styles.categoryDetails}>
+                  <Text style={styles.categoryName}>{item.name}</Text>
+                  <Text style={styles.quoteCount}>
+                    {item.quoteCount}{' '}
+                    {item.quoteCount === 1 ? 'quote' : 'quotes'}
+                  </Text>
+                </View>
+
+                <Pressable
+                  accessibilityLabel={`${isFollowing ? 'Unfollow' : 'Follow'} ${
+                    item.name
+                  }`}
+                  accessibilityRole="button"
+                  accessibilityState={{ selected: isFollowing }}
+                  onPress={() => toggleFollowedCategory(item.id)}
+                  style={({ pressed }) =>
+                    pressed ? styles.pressedButton : undefined
+                  }
+                >
+                  <LiquidGlassView
+                    colorScheme="dark"
+                    effect="regular"
+                    interactive
+                    style={[
+                      styles.followButton,
+                      !isLiquidGlassSupported && styles.followButtonFallback,
+                      !isLiquidGlassSupported &&
+                        !isFollowing &&
+                        styles.followButtonAccentFallback,
+                    ]}
+                    tintColor={isFollowing ? undefined : colors.accent}
+                  >
+                    <Text
+                      style={[
+                        styles.followButtonText,
+                        !isFollowing && styles.followButtonAccentText,
+                      ]}
+                    >
+                      {isFollowing ? 'Following' : 'Follow'}
+                    </Text>
+                  </LiquidGlassView>
+                </Pressable>
               </View>
-              <Text accessibilityElementsHidden style={styles.chevron}>
-                ›
-              </Text>
-            </Pressable>
-          )}
+            );
+          }}
           renderSectionHeader={({ section }) => (
             <View style={styles.sectionHeader}>
               <Text style={styles.sectionTitle}>{section.title}</Text>
@@ -156,7 +199,10 @@ function Explore({ navigation }: ExploreProps) {
 }
 
 const styles = StyleSheet.create({
-  categoryDetails: { flex: 1, gap: 4 },
+  categoryDetails: {
+    flex: 1,
+    gap: 4,
+  },
   categoryName: {
     color: colors.textPrimary,
     fontFamily: 'Manrope-SemiBold',
@@ -167,25 +213,59 @@ const styles = StyleSheet.create({
     borderBottomColor: colors.border,
     borderBottomWidth: StyleSheet.hairlineWidth,
     flexDirection: 'row',
+    gap: 16,
     minHeight: 76,
     paddingVertical: 12,
   },
-  centeredState: { marginTop: 48 },
+  centeredState: {
+    marginTop: 48,
+  },
   centeredStateText: {
     color: colors.textSecondary,
     marginTop: 48,
     textAlign: 'center',
   },
-  chevron: {
-    color: colors.textMuted,
-    fontFamily: 'Manrope-Regular',
-    fontSize: 30,
-    marginLeft: 16,
+  container: {
+    backgroundColor: colors.background,
+    flex: 1,
   },
-  container: { backgroundColor: colors.background, flex: 1 },
-  header: { gap: 8, paddingHorizontal: 20 },
-  listContent: { paddingBottom: 120, paddingHorizontal: 20 },
-  pressedRow: { opacity: 0.55 },
+  followButton: {
+    alignItems: 'center',
+    borderRadius: 18,
+    justifyContent: 'center',
+    height: 36,
+    paddingHorizontal: 16,
+    width: 96,
+  },
+  followButtonFallback: {
+    backgroundColor: 'rgba(255, 255, 255, 0.10)',
+    borderColor: 'rgba(255, 255, 255, 0.18)',
+    borderWidth: StyleSheet.hairlineWidth,
+  },
+  followButtonText: {
+    color: colors.textPrimary,
+    fontFamily: 'Manrope-SemiBold',
+    fontSize: 14,
+  },
+  followButtonAccentFallback: {
+    backgroundColor: colors.accent,
+    borderColor: colors.accent,
+  },
+  followButtonAccentText: {
+    color: colors.accentText,
+  },
+  header: {
+    gap: 8,
+    paddingTop: 16,
+    paddingHorizontal: 20,
+  },
+  listContent: {
+    paddingBottom: 120,
+    paddingHorizontal: 20,
+  },
+  pressedButton: {
+    opacity: 0.65,
+  },
   quoteCount: {
     color: colors.textSecondary,
     fontFamily: 'Manrope-Regular',
@@ -219,12 +299,6 @@ const styles = StyleSheet.create({
     fontSize: 15,
     lineHeight: 21,
   },
-  title: {
-    color: colors.textPrimary,
-    fontFamily: 'Manrope-ExtraBold',
-    fontSize: 32,
-    lineHeight: 38,
-  },
 });
 
-export default Explore;
+export default Topics;

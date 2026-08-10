@@ -1,4 +1,5 @@
-import { useCallback, useRef, useState } from 'react';
+import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import type { ListRenderItem, ViewToken } from 'react-native';
 import {
   ActivityIndicator,
@@ -11,31 +12,27 @@ import {
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useLovedQuotes } from '@/hooks/useLovedQuotes';
-import { useFollowedCategories } from '@/hooks/useFollowedCategories';
 import { useQuoteHistory } from '@/hooks/useQuoteHistory';
+import { Paths } from '@/navigation/paths';
+import type { RootStackParamList } from '@/navigation/types';
+import QuotePage from '@/screens/Home/components/QuotePage';
+import { useQuotes } from '@/screens/Home/hooks/useQuotes';
+import type { Quote } from '@/screens/Home/types';
 import { colors } from '@/theme/colors';
 
-import QuotePage from './components/QuotePage';
-import { useQuotes } from './hooks/useQuotes';
-import type { Quote } from './types';
+type CategoryProps = NativeStackScreenProps<RootStackParamList, Paths.Category>;
 
 const TAB_BAR_CLEARANCE = 68;
 const MINIMUM_ACTION_INSET = 12;
 
-function getShareMessage(quote: Quote): string {
-  return quote.author.name
-    ? `${quote.text} — ${quote.author.name}`
-    : quote.text;
-}
-
-function Home() {
-  const insets = useSafeAreaInsets();
-  const { followedCategoryNames } = useFollowedCategories();
-  const { error, isLoading, isRefreshing, quotes, refresh } = useQuotes(
-    followedCategoryNames,
-  );
+function Category({ route }: CategoryProps) {
+  const { categoryId } = route.params;
+  const categories = useMemo(() => new Set([categoryId]), [categoryId]);
+  const { error, isLoading, isRefreshing, quotes, refresh } =
+    useQuotes(categories);
   const { isLoved, toggleLovedQuote } = useLovedQuotes();
   const { recordQuoteViewed } = useQuoteHistory();
+  const insets = useSafeAreaInsets();
   const [pageHeight, setPageHeight] = useState(0);
   const scrollY = useRef(new Animated.Value(0)).current;
   const lastViewedQuoteId = useRef<string | null>(null);
@@ -46,7 +43,6 @@ function Home() {
   const onViewableItemsChanged = useRef(
     ({ viewableItems }: { viewableItems: ViewToken<Quote>[] }) => {
       const visibleQuote = viewableItems.find(item => item.isViewable)?.item;
-
       if (visibleQuote && lastViewedQuoteId.current !== visibleQuote.id) {
         lastViewedQuoteId.current = visibleQuote.id;
         recordQuoteViewed(visibleQuote.id);
@@ -57,10 +53,14 @@ function Home() {
     Math.max(insets.bottom, MINIMUM_ACTION_INSET) + TAB_BAR_CLEARANCE;
 
   const shareQuote = useCallback((quote: Quote) => {
-    Share.share({ message: getShareMessage(quote) });
+    Share.share({
+      message: quote.author.name
+        ? `${quote.text} — ${quote.author.name}`
+        : quote.text,
+    });
   }, []);
 
-  const refreshFeed = useCallback(() => {
+  const refreshQuotes = useCallback(() => {
     lastViewedQuoteId.current = null;
     scrollY.setValue(0);
     refresh();
@@ -79,11 +79,8 @@ function Home() {
         scrollY={scrollY}
       />
     ),
-    [actionBottom, isLoved, pageHeight, shareQuote, scrollY, toggleLovedQuote],
+    [actionBottom, isLoved, pageHeight, scrollY, shareQuote, toggleLovedQuote],
   );
-
-  const canRenderFeed =
-    !isLoading && !error && pageHeight > 0 && quotes.length > 0;
 
   return (
     <View
@@ -96,12 +93,10 @@ function Home() {
       )}
       {!isLoading && !error && quotes.length === 0 && (
         <Text style={styles.centeredStateText}>
-          {followedCategoryNames.size === 0
-            ? 'Choose topics in Profile to personalize your feed.'
-            : 'No quotes are available for your followed categories.'}
+          No quotes are available in this category yet.
         </Text>
       )}
-      {canRenderFeed && (
+      {!isLoading && !error && pageHeight > 0 && quotes.length > 0 && (
         <Animated.FlatList
           automaticallyAdjustContentInsets={false}
           contentInsetAdjustmentBehavior="never"
@@ -116,20 +111,19 @@ function Home() {
           initialNumToRender={2}
           keyExtractor={item => item.id}
           maxToRenderPerBatch={3}
+          onRefresh={refreshQuotes}
           onScroll={Animated.event(
             [{ nativeEvent: { contentOffset: { y: scrollY } } }],
             { useNativeDriver: true },
           )}
-          onRefresh={refreshFeed}
           onViewableItemsChanged={onViewableItemsChanged}
           pagingEnabled
           refreshing={isRefreshing}
           renderItem={renderItem}
           scrollEventThrottle={16}
           showsVerticalScrollIndicator={false}
-          style={styles.feed}
-          windowSize={3}
           viewabilityConfig={viewabilityConfig}
+          windowSize={3}
         />
       )}
     </View>
@@ -151,14 +145,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     top: '50%',
   },
-  container: {
-    backgroundColor: colors.background,
-    flex: 1,
-  },
-  feed: {
-    backgroundColor: colors.background,
-    flex: 1,
-  },
+  container: { backgroundColor: colors.background, flex: 1 },
 });
 
-export default Home;
+export default Category;

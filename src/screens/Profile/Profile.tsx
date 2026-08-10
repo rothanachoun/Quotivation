@@ -9,10 +9,16 @@ import { colors } from '@/theme/colors';
 
 type ProfileSetting = {
   description: string;
+  path?: Paths.Topics;
   title: string;
 };
 
 const PERSONALIZATION_SETTINGS: ProfileSetting[] = [
+  {
+    title: 'Topics',
+    description: 'Choose the topics that personalize your Home feed.',
+    path: Paths.Topics,
+  },
   {
     title: 'Reminders',
     description: 'Schedule daily quote notifications.',
@@ -29,13 +35,19 @@ const PERSONALIZATION_SETTINGS: ProfileSetting[] = [
 
 type SettingRowProps = {
   isLast: boolean;
+  onPress?: () => void;
   setting: ProfileSetting;
 };
 
-function SettingRow({ isLast, setting }: SettingRowProps) {
+function SettingRow({ isLast, onPress, setting }: SettingRowProps) {
   return (
-    <View
-      accessibilityLabel={`${setting.title}. ${setting.description}. Coming soon.`}
+    <Pressable
+      accessibilityLabel={`${setting.title}. ${setting.description}${
+        onPress ? '' : '. Coming soon.'
+      }`}
+      accessibilityRole={onPress ? 'button' : undefined}
+      disabled={!onPress}
+      onPress={onPress}
       style={[styles.settingRow, !isLast && styles.settingRowBorder]}
     >
       <View style={styles.settingCopy}>
@@ -43,10 +55,16 @@ function SettingRow({ isLast, setting }: SettingRowProps) {
         <Text style={styles.settingDescription}>{setting.description}</Text>
       </View>
 
-      <View style={styles.statusBadge}>
-        <Text style={styles.statusText}>Coming soon</Text>
-      </View>
-    </View>
+      {onPress ? (
+        <Text accessibilityElementsHidden style={styles.chevron}>
+          ›
+        </Text>
+      ) : (
+        <View style={styles.statusBadge}>
+          <Text style={styles.statusText}>Coming soon</Text>
+        </View>
+      )}
+    </Pressable>
   );
 }
 
@@ -97,6 +115,11 @@ function Profile({ navigation }: ProfileProps) {
             <SettingRow
               isLast={index === PERSONALIZATION_SETTINGS.length - 1}
               key={setting.title}
+              onPress={
+                setting.path === Paths.Topics
+                  ? () => navigation.navigate(Paths.Topics)
+                  : undefined
+              }
               setting={setting}
             />
           ))}
@@ -107,6 +130,11 @@ function Profile({ navigation }: ProfileProps) {
 }
 
 const styles = StyleSheet.create({
+  chevron: {
+    color: colors.textMuted,
+    fontFamily: 'Manrope-Regular',
+    fontSize: 30,
+  },
   container: {
     backgroundColor: colors.background,
     flex: 1,

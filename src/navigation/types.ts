@@ -11,6 +11,8 @@ export type RootStackParamList = {
   [Paths.Startup]: undefined;
   [Paths.Search]: undefined;
   [Paths.Home]: undefined;
+  [Paths.Category]: { categoryId: string; categoryName: string };
   [Paths.Settings]: undefined;
   [Paths.Profile]: undefined;
+  [Paths.Topics]: undefined;
 };

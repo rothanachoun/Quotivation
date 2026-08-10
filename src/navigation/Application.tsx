@@ -8,7 +8,7 @@ import { Paths } from '@/navigation/paths';
 import type { RootStackParamList } from '@/navigation/types';
 import { colors } from '@/theme/colors';
 
-import { Explore, Home, Profile, Settings } from '@/screens';
+import { Category, Explore, Home, Profile, Settings, Topics } from '@/screens';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator<RootStackParamList>();
@@ -39,25 +39,35 @@ function resolveIcon(source: ImageRequireSource) {
   return icon;
 }
 
-const exploreIcon = resolveIcon(
-  require('@/assets/icons/explore.svg'),
-);
-const homeIcon = resolveIcon(
-  require('@/assets/icons/house.svg'),
-);
-const profileIcon = resolveIcon(
-  require('@/assets/icons/profile.svg'),
-);
+const exploreIcon = resolveIcon(require('@/assets/icons/explore.svg'));
+const homeIcon = resolveIcon(require('@/assets/icons/house.svg'));
+const profileIcon = resolveIcon(require('@/assets/icons/profile.svg'));
 
 function ExploreStackNavigator() {
   return (
     <Stack.Navigator
       screenOptions={{
         contentStyle: { backgroundColor: APP_BACKGROUND_COLOR },
+        headerBackButtonDisplayMode: 'minimal',
         headerShown: false,
       }}
     >
       <Stack.Screen name={Paths.Explore} component={Explore} />
+      <Stack.Screen
+        name={Paths.Category}
+        component={Category}
+        options={({ route }) => ({
+          headerShown: true,
+          headerShadowVisible: false,
+          headerStyle: { backgroundColor: 'transparent' },
+          headerTintColor: colors.textPrimary,
+          headerTransparent: true,
+          headerTitleStyle: {
+            fontFamily: 'Manrope-SemiBold',
+          },
+          title: route.params.categoryName,
+        })}
+      />
     </Stack.Navigator>
   );
 }
@@ -67,6 +77,7 @@ function ProfileStackNavigator() {
     <Stack.Navigator
       screenOptions={{
         contentStyle: { backgroundColor: APP_BACKGROUND_COLOR },
+        headerBackButtonDisplayMode: 'minimal',
         headerShadowVisible: false,
         headerStyle: { backgroundColor: APP_BACKGROUND_COLOR },
         headerTintColor: colors.textPrimary,
@@ -78,6 +89,11 @@ function ProfileStackNavigator() {
         options={{ headerShown: false }}
       />
       <Stack.Screen
+        name={Paths.Topics}
+        component={Topics}
+        options={{ title: 'Topics' }}
+      />
+      <Stack.Screen
         name={Paths.Settings}
         component={Settings}
         options={{ title: 'Settings' }}
@@ -87,7 +103,6 @@ function ProfileStackNavigator() {
 }
 
 function ApplicationNavigator() {
-
   return (
     <NavigationContainer theme={navigationTheme}>
       <Tab.Navigator
@@ -131,7 +146,6 @@ function ApplicationNavigator() {
             },
           }}
         />
-        
       </Tab.Navigator>
     </NavigationContainer>
   );

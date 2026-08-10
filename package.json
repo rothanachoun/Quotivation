@@ -5,6 +5,7 @@
   "scripts": {
     "android": "react-native run-android",
     "db:import": "node scripts/import-quotes.mjs",
+    "db:generate": "node scripts/generate-quotes.mjs",
     "ios": "react-native run-ios",
     "lint": "eslint .",
     "start": "react-native start",

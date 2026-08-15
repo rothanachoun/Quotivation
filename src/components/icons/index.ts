@@ -1,6 +1,8 @@
 export { default as ExploreIcon } from './ExploreIcon';
 export { default as HeartIcon } from './HeartIcon';
 export { default as HomeIcon } from './HomeIcon';
+export { default as MenuIcon } from './MenuIcon';
+export { default as MoreIcon } from './MoreIcon';
 export { default as ProfileIcon } from './ProfileIcon';
 export { default as QuoteIcon } from './QuoteIcon';
 export type { QuoteIconName } from './QuoteIcon';

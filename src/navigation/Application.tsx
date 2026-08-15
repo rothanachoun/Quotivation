@@ -1,9 +1,13 @@
-import { DarkTheme, NavigationContainer } from '@react-navigation/native';
+import { useRef, type ReactNode } from 'react';
+import {
+  DarkTheme,
+  NavigationContainer,
+  useNavigation,
+} from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import type { ImageRequireSource } from 'react-native';
-import VectorImage from 'react-native-vector-image';
+import { Animated, Pressable, StyleSheet } from 'react-native';
 
+import { MenuIcon, ProfileIcon } from '@/components/icons';
 import { Paths } from '@/navigation/paths';
 import type { RootStackParamList } from '@/navigation/types';
 import { colors } from '@/theme/colors';
@@ -11,7 +15,6 @@ import { colors } from '@/theme/colors';
 import { Category, Explore, Home, Profile, Settings, Topics } from '@/screens';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
-const Tab = createBottomTabNavigator<RootStackParamList>();
 
 const APP_BACKGROUND_COLOR = colors.background;
 const navigationTheme = {
@@ -27,128 +30,139 @@ const navigationTheme = {
   },
 };
 
-function resolveIcon(source: ImageRequireSource) {
-  const icon = VectorImage.resolveAssetSource(source);
+type HeaderIconButtonProps = {
+  accessibilityLabel: string;
+  children: ReactNode;
+  onPress: () => void;
+};
 
-  if (!icon) {
-    throw new Error(
-      'Unable to resolve a tab icon. Run `npx react-native-vector-image generate` and rebuild the app.',
-    );
-  }
+type HomeHeaderNavigation = {
+  navigate: (path: Paths.Explore | Paths.Profile) => void;
+};
 
-  return icon;
-}
+function HeaderIconButton({
+  accessibilityLabel,
+  children,
+  onPress,
+}: HeaderIconButtonProps) {
+  const scale = useRef(new Animated.Value(1)).current;
 
-const exploreIcon = resolveIcon(require('@/assets/icons/explore.svg'));
-const homeIcon = resolveIcon(require('@/assets/icons/house.svg'));
-const profileIcon = resolveIcon(require('@/assets/icons/profile.svg'));
+  const animateTo = (toValue: number) => {
+    Animated.spring(scale, {
+      damping: 14,
+      mass: 0.45,
+      stiffness: 260,
+      toValue,
+      useNativeDriver: true,
+    }).start();
+  };
 
-function ExploreStackNavigator() {
   return (
-    <Stack.Navigator
-      screenOptions={{
-        contentStyle: { backgroundColor: APP_BACKGROUND_COLOR },
-        headerBackButtonDisplayMode: 'minimal',
-        headerShown: false,
-      }}
+    <Pressable
+      accessibilityLabel={accessibilityLabel}
+      accessibilityRole="button"
+      hitSlop={8}
+      onPress={onPress}
+      onPressIn={() => animateTo(0.78)}
+      onPressOut={() => animateTo(1)}
     >
-      <Stack.Screen name={Paths.Explore} component={Explore} />
-      <Stack.Screen
-        name={Paths.Category}
-        component={Category}
-        options={({ route }) => ({
-          headerShown: true,
-          headerShadowVisible: false,
-          headerStyle: { backgroundColor: 'transparent' },
-          headerTintColor: colors.textPrimary,
-          headerTransparent: true,
-          headerTitleStyle: {
-            fontFamily: 'Manrope-SemiBold',
-          },
-          title: route.params.categoryName,
-        })}
-      />
-    </Stack.Navigator>
+      <Animated.View style={[styles.headerButton, { transform: [{ scale }] }]}>
+        {children}
+      </Animated.View>
+    </Pressable>
   );
 }
 
-function ProfileStackNavigator() {
+function ExploreHeaderButton() {
+  const navigation = useNavigation() as unknown as HomeHeaderNavigation;
+
   return (
-    <Stack.Navigator
-      screenOptions={{
-        contentStyle: { backgroundColor: APP_BACKGROUND_COLOR },
-        headerBackButtonDisplayMode: 'minimal',
-        headerShadowVisible: false,
-        headerStyle: { backgroundColor: APP_BACKGROUND_COLOR },
-        headerTintColor: colors.textPrimary,
-      }}
+    <HeaderIconButton
+      accessibilityLabel="Open Explore"
+      onPress={() => navigation.navigate(Paths.Explore)}
     >
-      <Stack.Screen
-        name={Paths.Profile}
-        component={Profile}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen
-        name={Paths.Topics}
-        component={Topics}
-        options={{ title: 'Topics' }}
-      />
-      <Stack.Screen
-        name={Paths.Settings}
-        component={Settings}
-        options={{ title: 'Settings' }}
-      />
-    </Stack.Navigator>
+      <MenuIcon color={colors.textPrimary} size={22} />
+    </HeaderIconButton>
+  );
+}
+
+function ProfileHeaderButton() {
+  const navigation = useNavigation() as unknown as HomeHeaderNavigation;
+
+  return (
+    <HeaderIconButton
+      accessibilityLabel="Open Profile"
+      onPress={() => navigation.navigate(Paths.Profile)}
+    >
+      <ProfileIcon color={colors.textPrimary} size={22} />
+    </HeaderIconButton>
   );
 }
 
 function ApplicationNavigator() {
   return (
     <NavigationContainer theme={navigationTheme}>
-      <Tab.Navigator
+      <Stack.Navigator
         screenOptions={{
-          sceneStyle: { backgroundColor: APP_BACKGROUND_COLOR },
-          tabBarActiveTintColor: colors.accent,
-          tabBarInactiveTintColor: colors.textSecondary,
+          contentStyle: { backgroundColor: APP_BACKGROUND_COLOR },
+          headerBackButtonDisplayMode: 'minimal',
+          headerShadowVisible: false,
+          headerStyle: { backgroundColor: APP_BACKGROUND_COLOR },
+          headerTintColor: colors.textPrimary,
+          presentation: "fullScreenModal"
         }}
       >
-        <Tab.Screen
+        <Stack.Screen
           name={Paths.Home}
           component={Home}
           options={{
-            tabBarLabel: 'Home',
-            tabBarIcon: {
-              type: 'image',
-              source: homeIcon,
-            },
+            headerLeft: ExploreHeaderButton,
+            headerRight: ProfileHeaderButton,
+            headerStyle: { backgroundColor: 'transparent' },
+            headerTitle: '',
+            headerTransparent: true,
           }}
         />
-
-        <Tab.Screen
-          name={Paths.Search}
-          component={ExploreStackNavigator}
-          options={{
-            tabBarLabel: 'Explore',
-            tabBarIcon: {
-              type: 'image',
-              source: exploreIcon,
-            },
-          }}
+        <Stack.Screen
+          name={Paths.Explore}
+          component={Explore}
+          options={{ title: '' }}
         />
-        <Tab.Screen
+        <Stack.Screen
+          name={Paths.Category}
+          component={Category}
+          options={({ route }) => ({
+            headerShown: true,
+            title: route.params.categoryName,
+          })}
+        />
+        <Stack.Screen
           name={Paths.Profile}
-          component={ProfileStackNavigator}
-          options={{
-            tabBarLabel: 'Profile',
-            tabBarIcon: {
-              type: 'image',
-              source: profileIcon,
-            },
-          }}
+          component={Profile}
+          options={{ title: '' }}
         />
-      </Tab.Navigator>
+        <Stack.Screen
+          name={Paths.Topics}
+          component={Topics}
+          options={{ title: 'Topics' }}
+        />
+        <Stack.Screen
+          name={Paths.Settings}
+          component={Settings}
+          options={{ title: 'Settings' }}
+        />
+      </Stack.Navigator>
     </NavigationContainer>
   );
 }
 
 export default ApplicationNavigator;
+
+const styles = StyleSheet.create({
+  headerButton: {
+    alignItems: 'center',
+    height: 44,
+    justifyContent: 'center',
+    width: 44,
+  },
+});

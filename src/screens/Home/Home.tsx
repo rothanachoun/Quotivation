@@ -1,4 +1,5 @@
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import type { ListRenderItem, ViewToken } from 'react-native';
 import {
   ActivityIndicator,
@@ -8,19 +9,30 @@ import {
   Text,
   View,
 } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
+import categoryGroupsData from '@/assets/db/categories.json';
 import { useLovedQuotes } from '@/hooks/useLovedQuotes';
 import { useFollowedCategories } from '@/hooks/useFollowedCategories';
 import { useQuoteHistory } from '@/hooks/useQuoteHistory';
+import { Paths } from '@/navigation/paths';
+import type { RootStackParamList } from '@/navigation/types';
 import { colors } from '@/theme/colors';
 
 import QuotePage from './components/QuotePage';
 import { useQuotes } from './hooks/useQuotes';
 import type { Quote } from './types';
 
-const TAB_BAR_CLEARANCE = 68;
-const MINIMUM_ACTION_INSET = 12;
+type HomeProps = NativeStackScreenProps<RootStackParamList, Paths.Home>;
+
+type CategoryGroup = {
+  categories: Array<{ id: string; name: string }>;
+};
+
+const CATEGORY_NAMES = new Map(
+  (categoryGroupsData as CategoryGroup[]).flatMap(group =>
+    group.categories.map(category => [category.id, category.name] as const),
+  ),
+);
 
 function getShareMessage(quote: Quote): string {
   return quote.author.name
@@ -28,9 +40,21 @@ function getShareMessage(quote: Quote): string {
     : quote.text;
 }
 
-function Home() {
-  const insets = useSafeAreaInsets();
+function Home({ navigation }: HomeProps) {
   const { followedCategoryNames } = useFollowedCategories();
+  const headerTitle = useMemo(() => {
+    const selectedNames = [...followedCategoryNames].map(
+      categoryId => CATEGORY_NAMES.get(categoryId) ?? categoryId,
+    );
+
+    if (selectedNames.length === 0) {
+      return 'For You';
+    }
+
+    return selectedNames.length === 1
+      ? selectedNames[0]
+      : `${selectedNames[0]} +${selectedNames.length - 1}`;
+  }, [followedCategoryNames]);
   const { error, isLoading, isRefreshing, quotes, refresh } = useQuotes(
     followedCategoryNames,
   );
@@ -53,8 +77,10 @@ function Home() {
       }
     },
   ).current;
-  const actionBottom =
-    Math.max(insets.bottom, MINIMUM_ACTION_INSET) + TAB_BAR_CLEARANCE;
+
+  useLayoutEffect(() => {
+    navigation.setOptions({ headerTitle });
+  }, [headerTitle, navigation]);
 
   const shareQuote = useCallback((quote: Quote) => {
     Share.share({ message: getShareMessage(quote) });
@@ -69,7 +95,6 @@ function Home() {
   const renderItem = useCallback<ListRenderItem<Quote>>(
     ({ index, item }) => (
       <QuotePage
-        actionBottom={actionBottom}
         height={pageHeight}
         index={index}
         isLoved={isLoved(item.id)}
@@ -79,7 +104,7 @@ function Home() {
         scrollY={scrollY}
       />
     ),
-    [actionBottom, isLoved, pageHeight, shareQuote, scrollY, toggleLovedQuote],
+    [isLoved, pageHeight, shareQuote, scrollY, toggleLovedQuote],
   );
 
   const canRenderFeed =
@@ -132,6 +157,7 @@ function Home() {
           viewabilityConfig={viewabilityConfig}
         />
       )}
+
     </View>
   );
 }

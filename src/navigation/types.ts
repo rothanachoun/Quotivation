@@ -1,10 +1,10 @@
-import type { BottomTabScreenProps } from '@react-navigation/bottom-tabs';
+import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 
 import type { Paths } from '@/navigation/paths';
 
 export type RootScreenProps<
   S extends keyof RootStackParamList = keyof RootStackParamList,
-> = BottomTabScreenProps<RootStackParamList, S>;
+> = NativeStackScreenProps<RootStackParamList, S>;
 
 export type RootStackParamList = {
   [Paths.Explore]: undefined;

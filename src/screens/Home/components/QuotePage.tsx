@@ -18,7 +18,6 @@ import { HeartIcon, QuoteIcon, ShareIcon } from '@/components/icons';
 import type { Quote, QuoteSymbol } from '../types';
 
 type QuotePageProps = {
-  actionBottom: number;
   height: number;
   index: number;
   isLoved: boolean;
@@ -63,7 +62,6 @@ function QuoteSymbolView({ color, symbol }: QuoteSymbolViewProps) {
 }
 
 function QuotePage({
-  actionBottom,
   height,
   index,
   isLoved,
@@ -139,72 +137,72 @@ function QuotePage({
                 </Text>
               )}
             </View>
+            <Animated.View
+              pointerEvents="box-none"
+              style={[styles.actions, { opacity: actionsOpacity }]}
+            >
+              <LiquidGlassContainerView
+                spacing={12}
+                style={styles.actionContainer}
+              >
+                <Pressable
+                  accessibilityLabel={
+                    isLoved ? 'Remove from favorites' : 'Love quote'
+                  }
+                  accessibilityRole="button"
+                  accessibilityState={{ selected: isLoved }}
+                  hitSlop={8}
+                  onPress={() => onToggleLove(quote.id)}
+                >
+                  <LiquidGlassView
+                    effect="regular"
+                    interactive
+                    style={[
+                      styles.glassButton,
+                      !isLiquidGlassSupported && styles.glassButtonFallback,
+                    ]}
+                  >
+                    <HeartIcon
+                      color={isLoved ? '#E5484D' : quote.textColor}
+                      size={25}
+                    />
+                  </LiquidGlassView>
+                </Pressable>
+
+                <Pressable
+                  accessibilityLabel="Share quote"
+                  accessibilityRole="button"
+                  hitSlop={8}
+                  onPress={() => onShare(quote)}
+                >
+                  <LiquidGlassView
+                    effect="regular"
+                    interactive
+                    style={[
+                      styles.glassButton,
+                      !isLiquidGlassSupported && styles.glassButtonFallback,
+                    ]}
+                  >
+                    <ShareIcon color={quote.textColor} size={25} />
+                  </LiquidGlassView>
+                </Pressable>
+              </LiquidGlassContainerView>
+            </Animated.View>
           </View>
         </>
       )}
-
-      <Animated.View
-        pointerEvents="box-none"
-        style={[
-          styles.actions,
-          { bottom: actionBottom, opacity: actionsOpacity },
-        ]}
-      >
-        <LiquidGlassContainerView spacing={12} style={styles.actionContainer}>
-          <Pressable
-            accessibilityLabel={
-              isLoved ? 'Remove from favorites' : 'Love quote'
-            }
-            accessibilityRole="button"
-            accessibilityState={{ selected: isLoved }}
-            hitSlop={8}
-            onPress={() => onToggleLove(quote.id)}
-          >
-            <LiquidGlassView
-              effect="regular"
-              interactive
-              style={[
-                styles.glassButton,
-                !isLiquidGlassSupported && styles.glassButtonFallback,
-              ]}
-            >
-              <HeartIcon
-                color={isLoved ? '#E5484D' : quote.textColor}
-                size={25}
-              />
-            </LiquidGlassView>
-          </Pressable>
-
-          <Pressable
-            accessibilityLabel="Share quote"
-            accessibilityRole="button"
-            hitSlop={8}
-            onPress={() => onShare(quote)}
-          >
-            <LiquidGlassView
-              effect="regular"
-              interactive
-              style={[
-                styles.glassButton,
-                !isLiquidGlassSupported && styles.glassButtonFallback,
-              ]}
-            >
-              <ShareIcon color={quote.textColor} size={25} />
-            </LiquidGlassView>
-          </Pressable>
-        </LiquidGlassContainerView>
-      </Animated.View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
   actionContainer: {
+    flexDirection: 'row',
     gap: 14,
   },
   actions: {
-    position: 'absolute',
-    right: 18,
+    alignItems: 'center',
+    marginTop: 28,
   },
   author: {
     alignSelf: 'stretch',
@@ -247,7 +245,6 @@ const styles = StyleSheet.create({
     position: 'relative',
   },
   quoteCopy: {
-    paddingBottom: 82,
     paddingTop: 104,
     zIndex: 1,
   },
@@ -266,9 +263,11 @@ const styles = StyleSheet.create({
   },
   symbolAlignLeft: {
     justifyContent: 'flex-start',
+    left: 16
   },
   symbolAlignRight: {
     justifyContent: 'flex-end',
+    right: 16
   },
   symbolBackground: {
     bottom: 0,

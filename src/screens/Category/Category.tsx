@@ -9,8 +9,6 @@ import {
   Text,
   View,
 } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-
 import { useLovedQuotes } from '@/hooks/useLovedQuotes';
 import { useQuoteHistory } from '@/hooks/useQuoteHistory';
 import { Paths } from '@/navigation/paths';
@@ -22,9 +20,6 @@ import { colors } from '@/theme/colors';
 
 type CategoryProps = NativeStackScreenProps<RootStackParamList, Paths.Category>;
 
-const TAB_BAR_CLEARANCE = 68;
-const MINIMUM_ACTION_INSET = 12;
-
 function Category({ route }: CategoryProps) {
   const { categoryId } = route.params;
   const categories = useMemo(() => new Set([categoryId]), [categoryId]);
@@ -32,7 +27,6 @@ function Category({ route }: CategoryProps) {
     useQuotes(categories);
   const { isLoved, toggleLovedQuote } = useLovedQuotes();
   const { recordQuoteViewed } = useQuoteHistory();
-  const insets = useSafeAreaInsets();
   const [pageHeight, setPageHeight] = useState(0);
   const scrollY = useRef(new Animated.Value(0)).current;
   const lastViewedQuoteId = useRef<string | null>(null);
@@ -49,9 +43,6 @@ function Category({ route }: CategoryProps) {
       }
     },
   ).current;
-  const actionBottom =
-    Math.max(insets.bottom, MINIMUM_ACTION_INSET) + TAB_BAR_CLEARANCE;
-
   const shareQuote = useCallback((quote: Quote) => {
     Share.share({
       message: quote.author.name
@@ -69,7 +60,6 @@ function Category({ route }: CategoryProps) {
   const renderItem = useCallback<ListRenderItem<Quote>>(
     ({ index, item }) => (
       <QuotePage
-        actionBottom={actionBottom}
         height={pageHeight}
         index={index}
         isLoved={isLoved(item.id)}
@@ -79,7 +69,7 @@ function Category({ route }: CategoryProps) {
         scrollY={scrollY}
       />
     ),
-    [actionBottom, isLoved, pageHeight, scrollY, shareQuote, toggleLovedQuote],
+    [isLoved, pageHeight, scrollY, shareQuote, toggleLovedQuote],
   );
 
   return (

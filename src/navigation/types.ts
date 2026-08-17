@@ -8,13 +8,7 @@ export type RootScreenProps<
 
 export type RootStackParamList = {
   [Paths.Explore]: undefined;
-  [Paths.Startup]: undefined;
-  [Paths.Search]: undefined;
   [Paths.Home]: undefined;
-  [Paths.Topic]: {
-    topicId: string;
-    topicName: string;
-  };
   [Paths.Settings]: undefined;
   [Paths.Profile]: undefined;
   [Paths.Topics]: undefined;

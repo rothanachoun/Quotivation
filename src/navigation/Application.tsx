@@ -16,7 +16,7 @@ import { Paths } from '@/navigation/paths';
 import type { RootStackParamList } from '@/navigation/types';
 import { colors } from '@/theme/colors';
 
-import { Explore, Home, Profile, Settings, Topic, Topics } from '@/screens';
+import { Explore, Home, Profile, Settings, Topics } from '@/screens';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -171,6 +171,12 @@ function ApplicationNavigator() {
             headerStyle: { backgroundColor: 'transparent' },
             headerTitle: 'For You',
             headerTransparent: true,
+            scrollEdgeEffects: {
+              bottom: 'hidden',
+              left: 'hidden',
+              right: 'hidden',
+              top: 'hidden',
+            },
           }}
         />
         <Stack.Screen
@@ -193,14 +199,6 @@ function ApplicationNavigator() {
                 type: 'button',
               },
             ],
-          })}
-        />
-        <Stack.Screen
-          name={Paths.Topic}
-          component={Topic}
-          options={({ route }) => ({
-            headerShown: true,
-            title: route.params.topicName,
           })}
         />
         <Stack.Screen

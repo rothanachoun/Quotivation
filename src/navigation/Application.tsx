@@ -5,14 +5,18 @@ import {
   useNavigation,
 } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { Animated, Pressable, StyleSheet } from 'react-native';
+import {
+  isLiquidGlassSupported,
+  LiquidGlassView,
+} from '@callstack/liquid-glass';
+import { Animated, Pressable, StyleSheet, Text } from 'react-native';
 
-import { MenuIcon, ProfileIcon } from '@/components/icons';
+import { MenuIcon, ProfileIcon, SettingsIcon } from '@/components/icons';
 import { Paths } from '@/navigation/paths';
 import type { RootStackParamList } from '@/navigation/types';
 import { colors } from '@/theme/colors';
 
-import { Category, Explore, Home, Profile, Settings, Topics } from '@/screens';
+import { Explore, Home, Profile, Settings, Topic, Topics } from '@/screens';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -33,16 +37,19 @@ const navigationTheme = {
 type HeaderIconButtonProps = {
   accessibilityLabel: string;
   children: ReactNode;
+  glass?: boolean;
   onPress: () => void;
 };
 
 type HomeHeaderNavigation = {
-  navigate: (path: Paths.Explore | Paths.Profile) => void;
+  goBack: () => void;
+  navigate: (path: Paths.Explore | Paths.Profile | Paths.Settings) => void;
 };
 
 function HeaderIconButton({
   accessibilityLabel,
   children,
+  glass = false,
   onPress,
 }: HeaderIconButtonProps) {
   const scale = useRef(new Animated.Value(1)).current;
@@ -63,11 +70,25 @@ function HeaderIconButton({
       accessibilityRole="button"
       hitSlop={8}
       onPress={onPress}
-      onPressIn={() => animateTo(0.78)}
+      onPressIn={() => animateTo(glass ? 0.94 : 0.78)}
       onPressOut={() => animateTo(1)}
     >
-      <Animated.View style={[styles.headerButton, { transform: [{ scale }] }]}>
-        {children}
+      <Animated.View style={[styles.headerButton, { transform: [{ scale }] }]}> 
+        {glass ? (
+          <LiquidGlassView
+            colorScheme="dark"
+            effect="regular"
+            interactive
+            style={[
+              styles.headerGlass,
+              !isLiquidGlassSupported && styles.headerGlassFallback,
+            ]}
+          >
+            {children}
+          </LiquidGlassView>
+        ) : (
+          children
+        )}
       </Animated.View>
     </Pressable>
   );
@@ -99,6 +120,36 @@ function ProfileHeaderButton() {
   );
 }
 
+function SettingsHeaderButton() {
+  const navigation = useNavigation() as unknown as HomeHeaderNavigation;
+
+  return (
+    <HeaderIconButton
+      accessibilityLabel="Open settings"
+      glass
+      onPress={() => navigation.navigate(Paths.Settings)}
+    >
+      <SettingsIcon color={colors.textPrimary} size={22} />
+    </HeaderIconButton>
+  );
+}
+
+function CloseHeaderButton() {
+  const navigation = useNavigation() as unknown as HomeHeaderNavigation;
+
+  return (
+    <HeaderIconButton
+      accessibilityLabel="Close"
+      glass
+      onPress={() => navigation.goBack()}
+    >
+      <Text accessibilityElementsHidden style={styles.closeIcon}>
+        ×
+      </Text>
+    </HeaderIconButton>
+  );
+}
+
 function ApplicationNavigator() {
   return (
     <NavigationContainer theme={navigationTheme}>
@@ -109,7 +160,6 @@ function ApplicationNavigator() {
           headerShadowVisible: false,
           headerStyle: { backgroundColor: APP_BACKGROUND_COLOR },
           headerTintColor: colors.textPrimary,
-          presentation: "fullScreenModal"
         }}
       >
         <Stack.Screen
@@ -119,27 +169,71 @@ function ApplicationNavigator() {
             headerLeft: ExploreHeaderButton,
             headerRight: ProfileHeaderButton,
             headerStyle: { backgroundColor: 'transparent' },
-            headerTitle: '',
+            headerTitle: 'For You',
             headerTransparent: true,
           }}
         />
         <Stack.Screen
           name={Paths.Explore}
           component={Explore}
-          options={{ title: '' }}
+          options={({ navigation }) => ({
+            headerLeft: CloseHeaderButton,
+            headerStyle: { backgroundColor: 'transparent' },
+            headerTitleStyle: { color: colors.exploreAccent },
+            headerTransparent: true,
+            presentation: 'fullScreenModal',
+            title: 'Explore',
+            unstable_headerLeftItems: () => [
+              {
+                accessibilityLabel: 'Close',
+                icon: { name: 'xmark', type: 'sfSymbol' },
+                label: 'Close',
+                onPress: () => navigation.goBack(),
+                tintColor: colors.textPrimary,
+                type: 'button',
+              },
+            ],
+          })}
         />
         <Stack.Screen
-          name={Paths.Category}
-          component={Category}
+          name={Paths.Topic}
+          component={Topic}
           options={({ route }) => ({
             headerShown: true,
-            title: route.params.categoryName,
+            title: route.params.topicName,
           })}
         />
         <Stack.Screen
           name={Paths.Profile}
           component={Profile}
-          options={{ title: '' }}
+          options={({ navigation }) => ({
+            headerStyle: { backgroundColor: 'transparent' },
+            headerLeft: CloseHeaderButton,
+            headerRight: SettingsHeaderButton,
+            headerTransparent: true,
+            presentation: 'fullScreenModal',
+            title: 'Profile',
+            unstable_headerLeftItems: () => [
+              {
+                accessibilityLabel: 'Close',
+                icon: { name: 'xmark', type: 'sfSymbol' },
+                label: 'Close',
+                onPress: () => navigation.goBack(),
+                tintColor: colors.textPrimary,
+                type: 'button',
+              },
+            ],
+            unstable_headerRightItems: () => [
+              {
+                accessibilityLabel: 'Open settings',
+                icon: { name: 'gearshape', type: 'sfSymbol' },
+                label: 'Settings',
+                onPress: () => navigation.navigate(Paths.Settings),
+                tintColor: colors.textPrimary,
+                type: 'button',
+              },
+            ],
+          })}
         />
         <Stack.Screen
           name={Paths.Topics}
@@ -159,10 +253,30 @@ function ApplicationNavigator() {
 export default ApplicationNavigator;
 
 const styles = StyleSheet.create({
+  closeIcon: {
+    color: colors.textPrimary,
+    fontFamily: 'Manrope-Regular',
+    fontSize: 27,
+    lineHeight: 30,
+    marginTop: -2,
+  },
   headerButton: {
     alignItems: 'center',
     height: 44,
     justifyContent: 'center',
     width: 44,
+  },
+  headerGlass: {
+    alignItems: 'center',
+    borderRadius: 20,
+    height: 40,
+    justifyContent: 'center',
+    overflow: 'hidden',
+    width: 40,
+  },
+  headerGlassFallback: {
+    backgroundColor: colors.surfaceElevated,
+    borderColor: colors.border,
+    borderWidth: StyleSheet.hairlineWidth,
   },
 });

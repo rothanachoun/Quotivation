@@ -1,58 +1,26 @@
 import { readFileSync, writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 
-const categoriesPath = fileURLToPath(
-  new URL('../src/assets/db/categories.json', import.meta.url),
+const topicsPath = fileURLToPath(
+  new URL('../src/assets/db/topics.json', import.meta.url),
 );
 const quotesPath = fileURLToPath(
   new URL('../src/assets/db/quotes.json', import.meta.url),
 );
 
-const categoryGroups = JSON.parse(readFileSync(categoriesPath, 'utf8'));
+const topics = JSON.parse(readFileSync(topicsPath, 'utf8'));
 
 const actions = {
-  'keep-going': 'take one more step',
-  'starting-again': 'begin again with what you know now',
-  'difficult-days': 'meet a difficult day with kindness',
-  'positive-thinking': 'make room for a hopeful thought',
-  'never-give-up': 'keep trying when the path feels slow',
-  courage: 'move with fear instead of waiting for it to disappear',
-  'personal-growth': 'grow beyond an old version of yourself',
+  motivation: 'take one more meaningful step',
+  'self-love': 'treat yourself with compassion and respect',
+  peace: 'return to a calmer state of mind',
   confidence: 'trust your ability to learn as you go',
-  discipline: 'do what matters even when motivation is quiet',
-  consistency: 'return to the work with steady effort',
-  habits: 'repeat a small choice that serves you',
-  'self-love': 'treat yourself with the love you freely give others',
-  'self-respect': 'honor your needs without apology',
-  boundaries: 'protect your peace with a clear boundary',
-  'knowing-your-worth': 'remember that your worth is not up for debate',
-  'choosing-yourself': 'choose yourself without abandoning your compassion',
+  focus: 'give your attention to what matters now',
+  resilience: 'keep moving through a difficult moment',
+  relationships: 'build connection with care and honesty',
+  'personal-growth': 'grow beyond an old version of yourself',
   healing: 'give healing the time and honesty it needs',
-  'moving-on': 'move forward without denying what mattered',
-  'letting-go': 'release what no longer belongs in your future',
-  heartbreak: 'carry a tender heart through loss',
-  'walking-away': 'walk away from what keeps diminishing you',
-  'starting-over': 'build again from a wiser foundation',
-  overthinking: 'return from your thoughts to the present moment',
-  'inner-peace': 'protect the quiet within you',
-  calm: 'slow down before choosing your response',
-  rest: 'allow yourself to rest without earning it first',
-  mindfulness: 'notice this moment without trying to change it',
   gratitude: 'notice the good that is already here',
-  'healthy-love': 'choose love that feels safe, honest, and mutual',
-  breakups: 'accept the ending without losing yourself',
-  friendship: 'show up for friendship with care and honesty',
-  trust: 'build trust through truth and consistent action',
-  relationships: 'make room for two whole people in a relationship',
-  focus: 'give your full attention to what matters now',
-  productivity: 'turn intention into one useful action',
-  ambition: 'pursue a meaningful goal without losing yourself',
-  success: 'define success by values as well as results',
-  'life-lessons': 'let experience make you wiser rather than harder',
-  change: 'welcome change without needing every answer',
-  time: 'spend your time on what deserves your life',
-  philosophy: 'question deeply while living simply',
-  purpose: 'follow the work that gives your effort meaning',
 };
 
 const openings = [
@@ -82,32 +50,25 @@ const endings = [
 ];
 
 const palettes = [
-  { background: '#27313D', text: '#F4F6F9', accent: '#B5C2D4' },
-  { background: '#3D3444', text: '#FFF7FC', accent: '#E8C5DC' },
-  { background: '#30413C', text: '#F3FFF9', accent: '#B8D8CA' },
-  { background: '#463B31', text: '#FFF9F1', accent: '#E5C9A8' },
-  { background: '#253B4A', text: '#F2FAFF', accent: '#AFCFE3' },
+  { background: '#27313D', text: '#F4F6F9' },
+  { background: '#3D3444', text: '#FFF7FC' },
+  { background: '#30413C', text: '#F3FFF9' },
+  { background: '#463B31', text: '#FFF9F1' },
+  { background: '#253B4A', text: '#F2FAFF' },
 ];
 
-const fonts = [
-  'DMSerifDisplay-Regular',
-  'LibreBaskerville-Regular',
-  'Lora-SemiBold',
-  'PlayfairDisplay-SemiBold',
-  'CormorantGaramond-SemiBold',
-];
+const quoteFont = 'Lora-SemiBold';
 
-const alignments = ['left', 'center', 'right'];
-const symbolAlignments = ['left', 'center', 'right'];
+const alignments = ['left', 'center'];
+const decorations = ['block', 'classic', 'compact', 'soft', 'round'];
 const updatedAt = '2026-08-10T00:00:00Z';
 const quotes = [];
 
-for (const group of categoryGroups) {
-  for (const category of group.categories) {
-    const action = actions[category.id];
+for (const topic of topics) {
+    const action = actions[topic.id];
 
     if (!action) {
-      throw new Error(`Missing writing direction for ${category.id}`);
+      throw new Error(`Missing writing direction for ${topic.id}`);
     }
 
     for (let openingIndex = 0; openingIndex < openings.length; openingIndex += 1) {
@@ -115,38 +76,26 @@ for (const group of categoryGroups) {
         const number = openingIndex * endings.length + endingIndex + 1;
         const palette = palettes[(number - 1) % palettes.length];
         const text = `${openings[openingIndex](action)} ${endings[endingIndex]}`;
-        const fontSize = text.length > 120 ? 27 : text.length > 95 ? 29 : 32;
+        const fontSize = text.length > 120 ? 24 : text.length > 95 ? 26 : 29;
         const textAlign = alignments[(number - 1) % alignments.length];
 
         quotes.push({
-          id: `${category.id}-${String(number).padStart(3, '0')}`,
+          id: `${topic.id}-${String(number).padStart(3, '0')}`,
           type: 'text',
           text,
-          category: category.id,
+          topicIds: [topic.id],
           author: {
             name: '',
-            style: {
-              color: palette.accent,
-              fontFamily: 'Manrope-SemiBold',
-              fontSize: 16,
-              lineHeight: 23,
-              textAlign,
-            },
           },
           style: {
             color: palette.text,
-            fontFamily: fonts[(number - 1) % fonts.length],
+            fontFamily: quoteFont,
             fontSize,
-            lineHeight: fontSize + 12,
+            lineHeight: Math.round(fontSize * 1.35),
             textAlign,
           },
           segments: [{ text }],
-          symbol: {
-            icon: `quote-${((number - 1) % 5) + 1}`,
-            placement: 'top',
-            alignment: symbolAlignments[(number - 1) % symbolAlignments.length],
-            size: 54,
-          },
+          decoration: decorations[(number - 1) % decorations.length],
           backgroundColor: palette.background,
           backgroundImageUrl: null,
           imageUrl: null,
@@ -154,8 +103,7 @@ for (const group of categoryGroups) {
         });
       }
     }
-  }
 }
 
 writeFileSync(quotesPath, `${JSON.stringify(quotes, null, 2)}\n`);
-console.log(`Generated ${quotes.length} original quotes across ${Object.keys(actions).length} categories`);
+console.log(`Generated ${quotes.length} original quotes across ${topics.length} topics`);

@@ -4,108 +4,72 @@ export type QuoteRow = {
   author_json: string | null;
   background_color: string;
   background_image_url: string | null;
-  category: string;
+  decoration: string | null;
   id: string;
   image_url: string | null;
   segments_json: string | null;
   shuffle_key: number;
   style_json: string | null;
-  symbol_json: string | null;
   text: string;
   type: 'image' | 'text';
   updated_at: string;
 };
 
-export type QuoteCategory = {
+export type QuoteTopic = {
+  description: string;
   id: string;
+  name: string;
   quoteCount: number;
+  tags: string[];
 };
 
-type QuoteCategoryRow = {
-  category: string;
+type TopicRow = {
+  description: string;
+  id: string;
+  name: string;
   quote_count: number;
+  tags_json: string;
 };
 
-export async function getQuoteCategories(): Promise<QuoteCategory[]> {
-  const database = getDatabase();
-  const result = await database.execute(
-    `SELECT category, COUNT(*) AS quote_count
-     FROM quotes
-     GROUP BY category
-     ORDER BY category COLLATE NOCASE`,
+export async function getQuoteTopics(): Promise<QuoteTopic[]> {
+  const result = await getDatabase().execute(
+    `SELECT topics.*, COUNT(quote_topics.quote_id) AS quote_count
+     FROM topics
+     LEFT JOIN quote_topics ON quote_topics.topic_id = topics.id
+     GROUP BY topics.id
+     ORDER BY topics.rowid`,
   );
-
-  return (result.rows as QuoteCategoryRow[]).map(row => ({
-    id: row.category,
+  return (result.rows as TopicRow[]).map(row => ({
+    description: row.description,
+    id: row.id,
+    name: row.name,
     quoteCount: Number(row.quote_count),
+    tags: JSON.parse(row.tags_json) as string[],
   }));
 }
 
-export async function getQuotes(
-  limit = 20,
-  offset = 0,
-): Promise<QuoteRow[]> {
-  const database = getDatabase();
-
-  const result = await database.execute(
-    `SELECT *
-     FROM quotes
-     ORDER BY id
-     LIMIT ? OFFSET ?`,
-    [limit, offset],
-  );
-
-  return result.rows as QuoteRow[];
-}
-
-export async function getQuotesByCategory(
-  category: string,
-  limit = 20,
-  offset = 0,
-): Promise<QuoteRow[]> {
-  const database = getDatabase();
-
-  const result = await database.execute(
-    `SELECT *
-     FROM quotes
-     WHERE category = ?
-     ORDER BY id
-     LIMIT ? OFFSET ?`,
-    [category, limit, offset],
-  );
-
-  return result.rows as QuoteRow[];
-}
-
-export async function getQuotesByCategories(
-  categories: readonly string[],
+export async function getQuotesByTopicIds(
+  topicIds: readonly string[],
   limit = 20,
 ): Promise<QuoteRow[]> {
-  if (categories.length === 0) {
-    return [];
-  }
-
+  if (topicIds.length === 0) return [];
   const database = getDatabase();
-  const placeholders = categories.map(() => '?').join(', ');
+  const placeholders = topicIds.map(() => '?').join(', ');
   const shuffleCursor = Math.floor(Math.random() * 2147483647);
   const query = (comparison: '>=' | '<', queryLimit: number) =>
     database.execute(
-    `SELECT *
-     FROM quotes
-     WHERE category IN (${placeholders})
-       AND shuffle_key ${comparison} ?
-     ORDER BY shuffle_key, id
-     LIMIT ?`,
-      [...categories, shuffleCursor, queryLimit],
+      `SELECT DISTINCT quotes.* FROM quotes
+       INNER JOIN quote_topics ON quote_topics.quote_id = quotes.id
+       WHERE quote_topics.topic_id IN (${placeholders})
+         AND quotes.shuffle_key ${comparison} ?
+       ORDER BY quotes.shuffle_key, quotes.id LIMIT ?`,
+      [...topicIds, shuffleCursor, queryLimit],
     );
-
-  const firstResult = await query('>=', limit);
-  const rows = firstResult.rows as QuoteRow[];
-
+  const first = await query('>=', limit);
+  const rows = first.rows as QuoteRow[];
   if (rows.length < limit) {
-    const wrappedResult = await query('<', limit - rows.length);
-    rows.push(...(wrappedResult.rows as QuoteRow[]));
+    const wrapped = await query('<', limit - rows.length);
+    rows.push(...(wrapped.rows as QuoteRow[]));
   }
-
   return rows;
 }

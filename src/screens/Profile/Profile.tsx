@@ -2,7 +2,6 @@ import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import { SettingsIcon } from '@/components/icons';
 import { Paths } from '@/navigation/paths';
 import type { RootStackParamList } from '@/navigation/types';
 import { colors } from '@/theme/colors';
@@ -75,37 +74,19 @@ function Profile({ navigation }: ProfileProps) {
 
   return (
     <ScrollView
-      automaticallyAdjustContentInsets={false}
-      contentInsetAdjustmentBehavior="never"
+      contentInsetAdjustmentBehavior="automatic"
       contentContainerStyle={[
         styles.content,
         {
           paddingBottom: insets.bottom + 120,
-          paddingTop: insets.top + 16,
         },
       ]}
       style={styles.container}
     >
       <View style={styles.header}>
-        <View style={styles.headerCopy}>
-          <Text style={styles.title}>Profile</Text>
-          <Text style={styles.subtitle}>
-            Make Quotivation feel personal to you.
-          </Text>
-        </View>
-
-        <Pressable
-          accessibilityLabel="Open settings"
-          accessibilityRole="button"
-          hitSlop={8}
-          onPress={() => navigation.navigate(Paths.Settings)}
-          style={({ pressed }) => [
-            styles.settingsButton,
-            pressed && styles.settingsButtonPressed,
-          ]}
-        >
-          <SettingsIcon color={colors.textPrimary} size={22} />
-        </Pressable>
+        <Text style={styles.subtitle}>
+          Make Quotivation feel personal to you.
+        </Text>
       </View>
 
       <View style={styles.section}>
@@ -143,13 +124,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   header: {
-    alignItems: 'flex-start',
-    flexDirection: 'row',
-    gap: 16,
-  },
-  headerCopy: {
-    flex: 1,
-    gap: 8,
+    paddingTop: 12,
   },
   section: {
     gap: 10,
@@ -197,19 +172,6 @@ const styles = StyleSheet.create({
     borderWidth: StyleSheet.hairlineWidth,
     overflow: 'hidden',
   },
-  settingsButton: {
-    alignItems: 'center',
-    backgroundColor: colors.surface,
-    borderColor: colors.border,
-    borderRadius: 22,
-    borderWidth: StyleSheet.hairlineWidth,
-    height: 44,
-    justifyContent: 'center',
-    width: 44,
-  },
-  settingsButtonPressed: {
-    opacity: 0.6,
-  },
   statusBadge: {
     backgroundColor: colors.surfaceElevated,
     borderRadius: 12,
@@ -226,12 +188,6 @@ const styles = StyleSheet.create({
     fontFamily: 'Manrope-Regular',
     fontSize: 15,
     lineHeight: 21,
-  },
-  title: {
-    color: colors.textPrimary,
-    fontFamily: 'Manrope-ExtraBold',
-    fontSize: 32,
-    lineHeight: 38,
   },
 });
 

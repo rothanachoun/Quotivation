@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import { memo, useRef, type ReactNode } from 'react';
 import {
   Animated,
   Image,
@@ -7,15 +7,11 @@ import {
   Text,
   View,
 } from 'react-native';
-import {
-  isLiquidGlassSupported,
-  LiquidGlassContainerView,
-  LiquidGlassView,
-} from '@callstack/liquid-glass';
-
 import { HeartIcon, QuoteIcon, ShareIcon } from '@/components/icons';
+import { colors } from '@/theme/colors';
 
-import type { Quote, QuoteSymbol } from '../types';
+import { DECORATION_PRESETS } from '../decorations';
+import type { DecorationName, Quote } from '../types';
 
 type QuotePageProps = {
   height: number;
@@ -27,31 +23,74 @@ type QuotePageProps = {
   scrollY: Animated.Value;
 };
 
-type QuoteSymbolViewProps = {
+type DecorationProps = {
   color: string;
-  symbol: QuoteSymbol;
+  name: DecorationName;
 };
 
-function QuoteSymbolView({ color, symbol }: QuoteSymbolViewProps) {
+type IconButtonProps = {
+  accessibilityLabel: string;
+  children: ReactNode;
+  onPress: () => void;
+  selected?: boolean;
+};
+
+function IconButton({
+  accessibilityLabel,
+  children,
+  onPress,
+  selected,
+}: IconButtonProps) {
+  const scale = useRef(new Animated.Value(1)).current;
+
+  const animateTo = (toValue: number) => {
+    Animated.spring(scale, {
+      damping: 14,
+      mass: 0.45,
+      stiffness: 260,
+      toValue,
+      useNativeDriver: true,
+    }).start();
+  };
+
+  return (
+    <Pressable
+      accessibilityLabel={accessibilityLabel}
+      accessibilityRole="button"
+      accessibilityState={selected === undefined ? undefined : { selected }}
+      hitSlop={8}
+      onPress={onPress}
+      onPressIn={() => animateTo(0.78)}
+      onPressOut={() => animateTo(1)}
+    >
+      <Animated.View style={[styles.iconButton, { transform: [{ scale }] }]}>
+        {children}
+      </Animated.View>
+    </Pressable>
+  );
+}
+
+function Decoration({ color, name }: DecorationProps) {
+  const preset = DECORATION_PRESETS[name];
+
   return (
     <View pointerEvents="none" style={styles.symbolLayer}>
       <View
         style={[
           styles.symbolPosition,
-          symbol.placement === 'top' && styles.symbolTop,
-          symbol.placement === 'bottom' && styles.symbolBottom,
-          symbol.placement === 'background' && styles.symbolBackground,
-          symbol.alignment === 'left' && styles.symbolAlignLeft,
-          symbol.alignment === 'center' && styles.symbolAlignCenter,
-          symbol.alignment === 'right' && styles.symbolAlignRight,
+          preset.placement === 'top' && styles.symbolTop,
+          preset.placement === 'bottom' && styles.symbolBottom,
+          preset.placement === 'background' && styles.symbolBackground,
+          preset.alignment === 'left' && styles.symbolAlignLeft,
+          preset.alignment === 'center' && styles.symbolAlignCenter,
         ]}
       >
         <QuoteIcon
           color={color}
-          name={symbol.icon}
-          size={symbol.size}
+          name={preset.icon}
+          size={preset.size}
           style={
-            symbol.placement === 'background'
+            preset.placement === 'background'
               ? styles.symbolImageBackground
               : styles.symbolImage
           }
@@ -116,7 +155,7 @@ function QuotePage({
             <View pointerEvents="none" style={styles.imageOverlay} />
           )}
           <View style={styles.quoteContent}>
-            <QuoteSymbolView color={quote.style.color} symbol={quote.symbol} />
+            <Decoration color={quote.style.color} name={quote.decoration} />
             <View style={styles.quoteCopy}>
               <Text
                 accessibilityLabel={quote.text}
@@ -132,7 +171,16 @@ function QuotePage({
                 ))}
               </Text>
               {quote.author.name && (
-                <Text style={[styles.author, quote.author.style]}>
+                <Text
+                  style={[
+                    styles.author,
+                    {
+                      color: quote.style.color,
+                      fontFamily: quote.style.fontFamily,
+                      textAlign: quote.style.textAlign,
+                    },
+                  ]}
+                >
                   — {quote.author.name}
                 </Text>
               )}
@@ -141,52 +189,27 @@ function QuotePage({
               pointerEvents="box-none"
               style={[styles.actions, { opacity: actionsOpacity }]}
             >
-              <LiquidGlassContainerView
-                spacing={12}
-                style={styles.actionContainer}
-              >
-                <Pressable
+              <View style={styles.actionContainer}>
+                <IconButton
                   accessibilityLabel={
                     isLoved ? 'Remove from favorites' : 'Love quote'
                   }
-                  accessibilityRole="button"
-                  accessibilityState={{ selected: isLoved }}
-                  hitSlop={8}
                   onPress={() => onToggleLove(quote.id)}
+                  selected={isLoved}
                 >
-                  <LiquidGlassView
-                    effect="regular"
-                    interactive
-                    style={[
-                      styles.glassButton,
-                      !isLiquidGlassSupported && styles.glassButtonFallback,
-                    ]}
-                  >
-                    <HeartIcon
-                      color={isLoved ? '#E5484D' : quote.textColor}
-                      size={25}
-                    />
-                  </LiquidGlassView>
-                </Pressable>
+                  <HeartIcon
+                    color={isLoved ? colors.danger : quote.textColor}
+                    size={32}
+                  />
+                </IconButton>
 
-                <Pressable
+                <IconButton
                   accessibilityLabel="Share quote"
-                  accessibilityRole="button"
-                  hitSlop={8}
                   onPress={() => onShare(quote)}
                 >
-                  <LiquidGlassView
-                    effect="regular"
-                    interactive
-                    style={[
-                      styles.glassButton,
-                      !isLiquidGlassSupported && styles.glassButtonFallback,
-                    ]}
-                  >
-                    <ShareIcon color={quote.textColor} size={25} />
-                  </LiquidGlassView>
-                </Pressable>
-              </LiquidGlassContainerView>
+                  <ShareIcon color={quote.textColor} size={32} />
+                </IconButton>
+              </View>
             </Animated.View>
           </View>
         </>
@@ -206,6 +229,8 @@ const styles = StyleSheet.create({
   },
   author: {
     alignSelf: 'stretch',
+    fontSize: 15,
+    lineHeight: 21,
     marginTop: 28,
     opacity: 0.72,
   },
@@ -218,20 +243,14 @@ const styles = StyleSheet.create({
     top: 0,
     width: '100%',
   },
-  glassButton: {
+  iconButton: {
     alignItems: 'center',
-    borderRadius: 27,
     height: 54,
     justifyContent: 'center',
     width: 54,
   },
-  glassButtonFallback: {
-    backgroundColor: 'rgba(255, 255, 255, 0.58)',
-    borderColor: 'rgba(255, 255, 255, 0.75)',
-    borderWidth: StyleSheet.hairlineWidth,
-  },
   imageOverlay: {
-    backgroundColor: 'rgba(0, 0, 0, 0.42)',
+    backgroundColor: colors.overlay,
     bottom: 0,
     left: 0,
     position: 'absolute',
@@ -245,17 +264,17 @@ const styles = StyleSheet.create({
     position: 'relative',
   },
   quoteCopy: {
-    paddingTop: 104,
+    paddingTop: 72,
     zIndex: 1,
   },
   quotePage: {
-    backgroundColor: '#111111',
+    backgroundColor: colors.background,
     justifyContent: 'center',
     overflow: 'hidden',
     width: '100%',
   },
   quoteText: {
-    letterSpacing: -0.5,
+    letterSpacing: 0,
     textAlign: 'center',
   },
   symbolAlignCenter: {
@@ -265,10 +284,6 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     left: 16
   },
-  symbolAlignRight: {
-    justifyContent: 'flex-end',
-    right: 16
-  },
   symbolBackground: {
     bottom: 0,
     top: 0,
@@ -277,7 +292,7 @@ const styles = StyleSheet.create({
     bottom: 0,
   },
   symbolImage: {
-    opacity: 0.8,
+    opacity: 0.55,
   },
   symbolImageBackground: {
     opacity: 0.1,

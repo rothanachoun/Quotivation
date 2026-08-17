@@ -18,13 +18,13 @@ import { useQuotes } from '@/screens/Home/hooks/useQuotes';
 import type { Quote } from '@/screens/Home/types';
 import { colors } from '@/theme/colors';
 
-type CategoryProps = NativeStackScreenProps<RootStackParamList, Paths.Category>;
+type TopicProps = NativeStackScreenProps<RootStackParamList, Paths.Topic>;
 
-function Category({ route }: CategoryProps) {
-  const { categoryId } = route.params;
-  const categories = useMemo(() => new Set([categoryId]), [categoryId]);
+function Topic({ route }: TopicProps) {
+  const { topicId } = route.params;
+  const topics = useMemo(() => new Set([topicId]), [topicId]);
   const { error, isLoading, isRefreshing, quotes, refresh } =
-    useQuotes(categories);
+    useQuotes(topics);
   const { isLoved, toggleLovedQuote } = useLovedQuotes();
   const { recordQuoteViewed } = useQuoteHistory();
   const [pageHeight, setPageHeight] = useState(0);
@@ -83,7 +83,7 @@ function Category({ route }: CategoryProps) {
       )}
       {!isLoading && !error && quotes.length === 0 && (
         <Text style={styles.centeredStateText}>
-          No quotes are available in this category yet.
+          No quotes are available in this topic yet.
         </Text>
       )}
       {!isLoading && !error && pageHeight > 0 && quotes.length > 0 && (
@@ -138,4 +138,4 @@ const styles = StyleSheet.create({
   container: { backgroundColor: colors.background, flex: 1 },
 });
 
-export default Category;
+export default Topic;

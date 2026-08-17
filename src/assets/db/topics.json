@@ -1,0 +1,12 @@
+[
+  { "id": "motivation", "name": "Motivation", "description": "Find encouragement to start, continue, and take meaningful action.", "tags": ["inspiration", "keep-going", "positive-thinking", "never-give-up", "taking-action"] },
+  { "id": "self-love", "name": "Self-Love", "description": "Build a kinder, healthier relationship with yourself.", "tags": ["self-worth", "self-respect", "self-acceptance", "choosing-yourself", "self-compassion"] },
+  { "id": "peace", "name": "Peace", "description": "Quiet your thoughts and reconnect with the present moment.", "tags": ["inner-peace", "calm", "mindfulness", "overthinking", "rest"] },
+  { "id": "confidence", "name": "Confidence", "description": "Trust yourself and move forward with courage.", "tags": ["courage", "self-belief", "bravery", "independence", "authenticity"] },
+  { "id": "focus", "name": "Focus", "description": "Direct your attention toward the work that matters.", "tags": ["discipline", "consistency", "productivity", "habits", "ambition"] },
+  { "id": "resilience", "name": "Resilience", "description": "Keep moving through challenges, setbacks, and difficult days.", "tags": ["difficult-days", "perseverance", "strength", "never-give-up", "starting-again"] },
+  { "id": "relationships", "name": "Relationships", "description": "Create healthier and more meaningful connections.", "tags": ["healthy-love", "friendship", "trust", "communication", "boundaries"] },
+  { "id": "personal-growth", "name": "Personal Growth", "description": "Learn, change, and become a stronger version of yourself.", "tags": ["growth", "change", "life-lessons", "purpose", "self-improvement"] },
+  { "id": "healing", "name": "Healing", "description": "Process emotional pain and move toward a healthier future.", "tags": ["heartbreak", "moving-on", "letting-go", "walking-away", "recovery"] },
+  { "id": "gratitude", "name": "Gratitude", "description": "Notice and appreciate the good already present in your life.", "tags": ["appreciation", "contentment", "positivity", "joy", "present-moment"] }
+]

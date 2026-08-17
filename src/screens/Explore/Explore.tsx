@@ -1,52 +1,57 @@
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   ActivityIndicator,
+  FlatList,
   Pressable,
-  SectionList,
   StyleSheet,
   Text,
-  TextInput,
   View,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-import categoryGroupsData from '@/assets/db/categories.json';
-import { getQuoteCategories, type QuoteCategory } from '@/database/quotes';
+import { TopicIcon, type TopicIconName } from '@/components/icons';
+import { getQuoteTopics, type QuoteTopic } from '@/database/quotes';
+import { useSelectedTopic } from '@/hooks/useSelectedTopic';
 import { Paths } from '@/navigation/paths';
 import type { RootStackParamList } from '@/navigation/types';
 import { colors } from '@/theme/colors';
 
-type CategoryDefinition = { id: string; name: string };
-type CategoryGroup = {
-  categories: CategoryDefinition[];
-  id: string;
-  name: string;
-};
 type ExploreProps = NativeStackScreenProps<RootStackParamList, Paths.Explore>;
 
-const CATEGORY_GROUPS = categoryGroupsData as CategoryGroup[];
+const TOPIC_CARD_COLORS: Record<string, string> = {
+  confidence: '#F6D675',
+  focus: '#A8E3D1',
+  gratitude: '#FFD39B',
+  healing: '#D7BDF2',
+  motivation: '#FFB678',
+  peace: '#A9DCF3',
+  'personal-growth': '#BCE88F',
+  relationships: '#F5A9AD',
+  resilience: '#B9B5EF',
+  'self-love': '#F4AECA',
+};
 
 function Explore({ navigation }: ExploreProps) {
   const insets = useSafeAreaInsets();
-  const [categories, setCategories] = useState<QuoteCategory[]>([]);
+  const { selectedTopicId, selectTopic } = useSelectedTopic();
+  const [topics, setTopics] = useState<QuoteTopic[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     let cancelled = false;
 
-    getQuoteCategories()
+    getQuoteTopics()
       .then(result => {
-        if (!cancelled) setCategories(result);
+        if (!cancelled) setTopics(result);
       })
       .catch(loadError => {
         if (!cancelled) {
           setError(
             loadError instanceof Error
               ? loadError.message
-              : 'Could not load categories',
+              : 'Could not load topics',
           );
         }
       })
@@ -59,171 +64,101 @@ function Explore({ navigation }: ExploreProps) {
     };
   }, []);
 
-  const visibleSections = useMemo(() => {
-    const normalizedQuery = searchQuery.trim().toLocaleLowerCase();
-    const quoteCounts = new Map(
-      categories.map(category => [category.id, category.quoteCount]),
-    );
-
-    return CATEGORY_GROUPS.map(group => ({
-      data: group.categories
-        .filter(
-          category =>
-            group.name.toLocaleLowerCase().includes(normalizedQuery) ||
-            category.name.toLocaleLowerCase().includes(normalizedQuery),
-        )
-        .map(category => ({
-          ...category,
-          quoteCount: quoteCounts.get(category.id) ?? 0,
-        })),
-      id: group.id,
-      title: group.name,
-    })).filter(section => section.data.length > 0);
-  }, [categories, searchQuery]);
-
   return (
-    <View style={[styles.container, { paddingTop: insets.top + 16 }]}>
-      <View style={styles.header}>
-        <Text style={styles.title}>Explore</Text>
-        <Text style={styles.subtitle}>
-          Choose a category and discover quotes for the moment.
-        </Text>
-        <TextInput
-          accessibilityLabel="Search categories"
-          autoCapitalize="none"
-          autoCorrect={false}
-          clearButtonMode="while-editing"
-          keyboardAppearance="dark"
-          onChangeText={setSearchQuery}
-          placeholder="Search categories"
-          placeholderTextColor={colors.textMuted}
-          returnKeyType="search"
-          style={styles.searchInput}
-          value={searchQuery}
-        />
-      </View>
-
-      {isLoading ? (
-        <ActivityIndicator style={styles.centeredState} />
-      ) : error ? (
-        <Text style={styles.centeredStateText}>{error}</Text>
-      ) : (
-        <SectionList
-          contentContainerStyle={styles.listContent}
-          keyboardShouldPersistTaps="handled"
-          keyExtractor={category => category.id}
-          ListEmptyComponent={
-            <Text style={styles.centeredStateText}>No categories found.</Text>
-          }
-          renderItem={({ item }) => (
-            <Pressable
-              accessibilityHint="Opens quotes in this category"
-              accessibilityRole="button"
-              onPress={() =>
-                navigation.navigate(Paths.Category, {
-                  categoryId: item.id,
-                  categoryName: item.name,
-                })
-              }
-              style={({ pressed }) => [
-                styles.categoryRow,
-                pressed && styles.pressedRow,
-              ]}
-            >
-              <View style={styles.categoryDetails}>
-                <Text style={styles.categoryName}>{item.name}</Text>
-                <Text style={styles.quoteCount}>
-                  {item.quoteCount} {item.quoteCount === 1 ? 'quote' : 'quotes'}
-                </Text>
-              </View>
-              <Text accessibilityElementsHidden style={styles.chevron}>
-                ›
-              </Text>
-            </Pressable>
-          )}
-          renderSectionHeader={({ section }) => (
-            <View style={styles.sectionHeader}>
-              <Text style={styles.sectionTitle}>{section.title}</Text>
-            </View>
-          )}
-          sections={visibleSections}
-          showsVerticalScrollIndicator={false}
-          stickySectionHeadersEnabled={false}
-        />
-      )}
+    <View style={styles.container}>
+      <FlatList
+        contentContainerStyle={[
+          styles.listContent,
+          { paddingBottom: insets.bottom + 120 },
+        ]}
+        contentInsetAdjustmentBehavior="automatic"
+        columnWrapperStyle={styles.topicRow}
+        data={isLoading || error ? [] : topics}
+        keyExtractor={topic => topic.id}
+        ListEmptyComponent={
+          isLoading ? (
+            <ActivityIndicator style={styles.centeredState} />
+          ) : (
+            <Text style={styles.centeredStateText}>
+              {error ?? 'No topics found.'}
+            </Text>
+          )
+        }
+        numColumns={2}
+        renderItem={({ item }) => (
+          <Pressable
+            accessibilityHint="Shows only this topic on Home"
+            accessibilityRole="button"
+            accessibilityState={{ selected: selectedTopicId === item.id }}
+            onPress={() => {
+              selectTopic(item.id);
+              navigation.goBack();
+            }}
+            style={({ pressed }) => [
+              styles.topicCardShell,
+              {
+                backgroundColor: TOPIC_CARD_COLORS[item.id] ?? '#D8D8D8',
+              },
+              selectedTopicId === item.id && styles.selectedCard,
+              pressed && styles.pressedCard,
+            ]}
+          >
+            <Text numberOfLines={2} style={styles.topicName}>{item.name}</Text>
+            <TopicIcon
+              color="#111111"
+              name={item.id as TopicIconName}
+              size={46}
+              style={styles.topicIcon}
+            />
+          </Pressable>
+        )}
+        showsVerticalScrollIndicator={false}
+        style={styles.list}
+      />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  categoryDetails: { flex: 1, gap: 4 },
-  categoryName: {
-    color: colors.textPrimary,
-    fontFamily: 'Manrope-SemiBold',
-    fontSize: 17,
-  },
-  categoryRow: {
-    alignItems: 'center',
-    borderBottomColor: colors.border,
-    borderBottomWidth: StyleSheet.hairlineWidth,
-    flexDirection: 'row',
-    minHeight: 76,
-    paddingVertical: 12,
-  },
   centeredState: { marginTop: 48 },
   centeredStateText: {
     color: colors.textSecondary,
     marginTop: 48,
     textAlign: 'center',
   },
-  chevron: {
-    color: colors.textMuted,
-    fontFamily: 'Manrope-Regular',
-    fontSize: 30,
-    marginLeft: 16,
-  },
   container: { backgroundColor: colors.background, flex: 1 },
-  header: { gap: 8, paddingHorizontal: 20 },
-  listContent: { paddingBottom: 120, paddingHorizontal: 20 },
-  pressedRow: { opacity: 0.55 },
-  quoteCount: {
-    color: colors.textSecondary,
-    fontFamily: 'Manrope-Regular',
-    fontSize: 14,
+  list: { backgroundColor: 'transparent', flex: 1 },
+  listContent: { paddingHorizontal: 20 },
+  topicIcon: {
+    alignSelf: 'flex-end',
+    opacity: 0.88,
   },
-  searchInput: {
-    backgroundColor: colors.surface,
-    borderRadius: 14,
-    color: colors.textPrimary,
-    fontFamily: 'Manrope-Regular',
-    fontSize: 16,
-    height: 48,
-    marginTop: 14,
-    paddingHorizontal: 16,
+  pressedCard: {
+    opacity: 0.72,
+    transform: [{ scale: 0.97 }],
   },
-  sectionHeader: {
-    backgroundColor: colors.background,
-    paddingBottom: 6,
-    paddingTop: 26,
+  selectedCard: {
+    borderColor: colors.textPrimary,
+    borderWidth: 3,
   },
-  sectionTitle: {
-    color: colors.textMuted,
-    fontFamily: 'Manrope-SemiBold',
-    fontSize: 13,
-    letterSpacing: 0.6,
-    textTransform: 'uppercase',
+  topicCardShell: {
+    aspectRatio: 1.65,
+    borderRadius: 22,
+    justifyContent: 'space-between',
+    overflow: 'hidden',
+    padding: 16,
+    width: '48%',
   },
-  subtitle: {
-    color: colors.textSecondary,
-    fontFamily: 'Manrope-Regular',
-    fontSize: 15,
-    lineHeight: 21,
-  },
-  title: {
-    color: colors.textPrimary,
+  topicName: {
+    color: '#111111',
     fontFamily: 'Manrope-ExtraBold',
-    fontSize: 32,
-    lineHeight: 38,
+    fontSize: 16,
+    lineHeight: 19,
+    maxWidth: '78%',
+  },
+  topicRow: {
+    justifyContent: 'space-between',
+    marginBottom: 20,
   },
 });
 

@@ -4,9 +4,9 @@ import type {
   Quote,
   QuoteAuthor,
   QuoteSegment,
-  QuoteSymbol,
   QuoteTextStyle,
 } from './types';
+import { resolveDecorationName } from './decorations';
 
 const DEFAULT_TEXT_STYLE: QuoteTextStyle = {
   color: '#FFFFFF',
@@ -14,21 +14,6 @@ const DEFAULT_TEXT_STYLE: QuoteTextStyle = {
   fontSize: 34,
   lineHeight: 48,
   textAlign: 'center',
-};
-
-const DEFAULT_AUTHOR_STYLE: QuoteTextStyle = {
-  color: '#FFFFFF',
-  fontFamily: 'Manrope-SemiBold',
-  fontSize: 17,
-  lineHeight: 24,
-  textAlign: 'left',
-};
-
-const DEFAULT_SYMBOL: QuoteSymbol = {
-  alignment: 'left',
-  icon: 'quote-1',
-  placement: 'top',
-  size: 72,
 };
 
 function parseJson<T>(value: string | null, fallback: T): T {
@@ -53,23 +38,16 @@ export function mapQuoteRow(row: QuoteRow): Quote {
   return {
     author: {
       name: authorData.name ?? '',
-      style: {
-        ...DEFAULT_AUTHOR_STYLE,
-        ...authorData.style,
-      },
     },
     backgroundColor: row.background_color,
     backgroundImageUrl: row.background_image_url,
+    decoration: resolveDecorationName(row.decoration),
     id: row.id,
     imageUrl: row.image_url,
     segments: parseJson<QuoteSegment[]>(row.segments_json, [
       { text: row.text },
     ]),
     style,
-    symbol: {
-      ...DEFAULT_SYMBOL,
-      ...parseJson<Partial<QuoteSymbol>>(row.symbol_json, {}),
-    },
     text: row.text,
     textColor: style.color,
     type: row.type,

@@ -1,5 +1,3 @@
-import type { QuoteIconName } from '@/components/icons';
-
 export type QuoteTextStyle = {
   color: string;
   fontFamily: string;
@@ -10,15 +8,14 @@ export type QuoteTextStyle = {
 
 export type QuoteAuthor = {
   name: string;
-  style: QuoteTextStyle;
 };
 
-export type QuoteSymbol = {
-  alignment: 'center' | 'left' | 'right';
-  icon: QuoteIconName;
-  placement: 'background' | 'bottom' | 'top';
-  size: number;
-};
+export type DecorationName =
+  | 'block'
+  | 'classic'
+  | 'compact'
+  | 'soft'
+  | 'round';
 
 export type QuoteSegment = {
   style?: {
@@ -34,11 +31,11 @@ export type Quote = {
   author: QuoteAuthor;
   backgroundColor: string;
   backgroundImageUrl: string | null;
+  decoration: DecorationName;
   id: string;
   imageUrl: string | null;
   segments: QuoteSegment[];
   style: QuoteTextStyle;
-  symbol: QuoteSymbol;
   text: string;
   textColor: string;
   type: 'image' | 'text';

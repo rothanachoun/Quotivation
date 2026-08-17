@@ -8,4 +8,6 @@ export { default as QuoteIcon } from './QuoteIcon';
 export type { QuoteIconName } from './QuoteIcon';
 export { default as ShareIcon } from './ShareIcon';
 export { default as SettingsIcon } from './SettingsIcon';
+export { default as TopicIcon } from './TopicIcon';
+export type { TopicIconName } from './TopicIcon';
 export type { IconProps } from './types';

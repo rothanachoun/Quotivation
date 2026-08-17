@@ -1,5 +1,4 @@
-import { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react';
-import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import type { ListRenderItem, ViewToken } from 'react-native';
 import {
   ActivityIndicator,
@@ -10,29 +9,14 @@ import {
   View,
 } from 'react-native';
 
-import categoryGroupsData from '@/assets/db/categories.json';
 import { useLovedQuotes } from '@/hooks/useLovedQuotes';
-import { useFollowedCategories } from '@/hooks/useFollowedCategories';
 import { useQuoteHistory } from '@/hooks/useQuoteHistory';
-import { Paths } from '@/navigation/paths';
-import type { RootStackParamList } from '@/navigation/types';
+import { useSelectedTopic } from '@/hooks/useSelectedTopic';
 import { colors } from '@/theme/colors';
 
 import QuotePage from './components/QuotePage';
 import { useQuotes } from './hooks/useQuotes';
 import type { Quote } from './types';
-
-type HomeProps = NativeStackScreenProps<RootStackParamList, Paths.Home>;
-
-type CategoryGroup = {
-  categories: Array<{ id: string; name: string }>;
-};
-
-const CATEGORY_NAMES = new Map(
-  (categoryGroupsData as CategoryGroup[]).flatMap(group =>
-    group.categories.map(category => [category.id, category.name] as const),
-  ),
-);
 
 function getShareMessage(quote: Quote): string {
   return quote.author.name
@@ -40,24 +24,14 @@ function getShareMessage(quote: Quote): string {
     : quote.text;
 }
 
-function Home({ navigation }: HomeProps) {
-  const { followedCategoryNames } = useFollowedCategories();
-  const headerTitle = useMemo(() => {
-    const selectedNames = [...followedCategoryNames].map(
-      categoryId => CATEGORY_NAMES.get(categoryId) ?? categoryId,
-    );
-
-    if (selectedNames.length === 0) {
-      return 'For You';
-    }
-
-    return selectedNames.length === 1
-      ? selectedNames[0]
-      : `${selectedNames[0]} +${selectedNames.length - 1}`;
-  }, [followedCategoryNames]);
-  const { error, isLoading, isRefreshing, quotes, refresh } = useQuotes(
-    followedCategoryNames,
+function Home() {
+  const { selectedTopicId } = useSelectedTopic();
+  const selectedTopicIds = useMemo(
+    () => new Set(selectedTopicId ? [selectedTopicId] : []),
+    [selectedTopicId],
   );
+  const { error, isLoading, isRefreshing, quotes, refresh } =
+    useQuotes(selectedTopicIds);
   const { isLoved, toggleLovedQuote } = useLovedQuotes();
   const { recordQuoteViewed } = useQuoteHistory();
   const [pageHeight, setPageHeight] = useState(0);
@@ -77,10 +51,6 @@ function Home({ navigation }: HomeProps) {
       }
     },
   ).current;
-
-  useLayoutEffect(() => {
-    navigation.setOptions({ headerTitle });
-  }, [headerTitle, navigation]);
 
   const shareQuote = useCallback((quote: Quote) => {
     Share.share({ message: getShareMessage(quote) });
@@ -121,9 +91,9 @@ function Home({ navigation }: HomeProps) {
       )}
       {!isLoading && !error && quotes.length === 0 && (
         <Text style={styles.centeredStateText}>
-          {followedCategoryNames.size === 0
-            ? 'Choose topics in Profile to personalize your feed.'
-            : 'No quotes are available for your followed categories.'}
+          {selectedTopicId
+            ? 'No quotes are available for this topic.'
+            : 'Choose a topic in Explore to begin.'}
         </Text>
       )}
       {canRenderFeed && (
@@ -139,6 +109,7 @@ function Home({ navigation }: HomeProps) {
             offset: pageHeight * index,
           })}
           initialNumToRender={2}
+          key={selectedTopicId ?? 'unselected-topic'}
           keyExtractor={item => item.id}
           maxToRenderPerBatch={3}
           onScroll={Animated.event(

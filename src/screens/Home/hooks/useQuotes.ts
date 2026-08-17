@@ -1,6 +1,6 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
-import { getQuotesByCategories } from '@/database/quotes';
+import { getQuotesByTopicIds } from '@/database/quotes';
 import { getRecentlyViewedQuoteIds } from '@/hooks/useQuoteHistory';
 
 import { mapQuoteRow } from '../mapQuoteRow';
@@ -50,7 +50,7 @@ function personalizeQuotes(quotes: Quote[]): Quote[] {
   return [...shuffle(unseenQuotes), ...seenQuotes];
 }
 
-export function useQuotes(categories: ReadonlySet<string>): UseQuotesResult {
+export function useQuotes(topicIds: ReadonlySet<string>): UseQuotesResult {
   const [state, setState] = useState<QuotesState>({
     error: null,
     isLoading: true,
@@ -58,19 +58,33 @@ export function useQuotes(categories: ReadonlySet<string>): UseQuotesResult {
     quotes: [],
   });
   const [requestId, setRequestId] = useState(0);
+  const topicKey = [...topicIds].sort().join(',');
+  const previousTopicKey = useRef<string | null>(null);
   const refresh = useCallback(() => setRequestId(id => id + 1), []);
 
   useEffect(() => {
     let cancelled = false;
+    const topicChanged = previousTopicKey.current !== topicKey;
 
-    setState(currentState => ({
-      ...currentState,
-      error: null,
-      isLoading: currentState.quotes.length === 0,
-      isRefreshing: currentState.quotes.length > 0,
-    }));
+    previousTopicKey.current = topicKey;
 
-    getQuotesByCategories([...categories], CANDIDATE_QUOTE_LIMIT)
+    setState(currentState =>
+      topicChanged
+        ? {
+            error: null,
+            isLoading: true,
+            isRefreshing: false,
+            quotes: [],
+          }
+        : {
+            ...currentState,
+            error: null,
+            isLoading: currentState.quotes.length === 0,
+            isRefreshing: currentState.quotes.length > 0,
+          },
+    );
+
+    getQuotesByTopicIds([...topicIds], CANDIDATE_QUOTE_LIMIT)
       .then(rows => {
         if (!cancelled) {
           setState({
@@ -96,7 +110,7 @@ export function useQuotes(categories: ReadonlySet<string>): UseQuotesResult {
     return () => {
       cancelled = true;
     };
-  }, [categories, refresh, requestId]);
+  }, [requestId, topicKey, topicIds]);
 
   return { ...state, refresh };
 }

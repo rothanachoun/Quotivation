@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { useTheme, type MD3Theme } from 'react-native-paper';
 import {
   isLiquidGlassSupported,
   LiquidGlassView,
@@ -14,9 +15,10 @@ import {
 
 import { getQuoteTopics, type QuoteTopic } from '@/database/quotes';
 import { useFollowedTopics } from '@/hooks/useFollowedTopics';
-import { colors } from '@/theme/colors';
 
 function Topics() {
+  const theme = useTheme<MD3Theme>();
+  const styles = useMemo(() => createStyles(theme), [theme]);
   const { isFollowingTopic, toggleFollowedTopic } = useFollowedTopics();
   const [topics, setTopics] = useState<QuoteTopic[]>([]);
   const [error, setError] = useState<string | null>(null);
@@ -64,7 +66,7 @@ function Topics() {
                 effect="regular"
                 interactive
                 style={[styles.button, !isLiquidGlassSupported && styles.buttonFallback]}
-                tintColor={selected ? undefined : colors.accent}
+                tintColor={selected ? undefined : theme.colors.primary}
               >
                 <Text style={[styles.buttonText, !selected && styles.buttonTextAccent]}>
                   {selected ? 'Following' : 'Follow'}
@@ -80,21 +82,21 @@ function Topics() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (theme: MD3Theme) => StyleSheet.create({
   button: { alignItems: 'center', borderRadius: 18, height: 36, justifyContent: 'center', width: 96 },
-  buttonFallback: { backgroundColor: colors.surfaceElevated, borderColor: colors.border, borderWidth: StyleSheet.hairlineWidth },
-  buttonText: { color: colors.textPrimary, fontFamily: 'Manrope-SemiBold', fontSize: 14 },
-  buttonTextAccent: { color: colors.accentText },
-  container: { backgroundColor: colors.background, flex: 1 },
+  buttonFallback: { backgroundColor: theme.colors.elevation.level2, borderColor: theme.colors.outline, borderWidth: StyleSheet.hairlineWidth },
+  buttonText: { color: theme.colors.onSurface, fontFamily: 'Manrope-SemiBold', fontSize: 14 },
+  buttonTextAccent: { color: theme.colors.onPrimary },
+  container: { backgroundColor: theme.colors.background, flex: 1 },
   content: { paddingBottom: 120, paddingHorizontal: 20 },
   copy: { flex: 1, gap: 4 },
-  count: { color: colors.textMuted, fontFamily: 'Manrope-Regular', fontSize: 12 },
-  description: { color: colors.textSecondary, fontFamily: 'Manrope-Regular', fontSize: 13, lineHeight: 18 },
-  name: { color: colors.textPrimary, fontFamily: 'Manrope-SemiBold', fontSize: 17 },
+  count: { color: theme.colors.onSurfaceDisabled, fontFamily: 'Manrope-Regular', fontSize: 12 },
+  description: { color: theme.colors.onSurfaceVariant, fontFamily: 'Manrope-Regular', fontSize: 13, lineHeight: 18 },
+  name: { color: theme.colors.onSurface, fontFamily: 'Manrope-SemiBold', fontSize: 17 },
   state: { marginTop: 48 },
-  stateText: { color: colors.textSecondary, marginTop: 48, textAlign: 'center' },
-  subtitle: { color: colors.textSecondary, fontFamily: 'Manrope-Regular', fontSize: 15, lineHeight: 21, paddingBottom: 18, paddingTop: 16 },
-  topicRow: { alignItems: 'center', borderBottomColor: colors.border, borderBottomWidth: StyleSheet.hairlineWidth, flexDirection: 'row', gap: 16, minHeight: 96, paddingVertical: 14 },
+  stateText: { color: theme.colors.onSurfaceVariant, marginTop: 48, textAlign: 'center' },
+  subtitle: { color: theme.colors.onSurfaceVariant, fontFamily: 'Manrope-Regular', fontSize: 15, lineHeight: 21, paddingBottom: 18, paddingTop: 16 },
+  topicRow: { alignItems: 'center', borderBottomColor: theme.colors.outline, borderBottomWidth: StyleSheet.hairlineWidth, flexDirection: 'row', gap: 16, minHeight: 96, paddingVertical: 14 },
 });
 
 export default Topics;

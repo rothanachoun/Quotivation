@@ -7,8 +7,8 @@ import {
   Text,
   View,
 } from 'react-native';
+import { useTheme, type MD3Theme } from 'react-native-paper';
 import { HeartIcon, QuoteIcon, ShareIcon } from '@/components/icons';
-import { colors } from '@/theme/colors';
 
 import { DECORATION_PRESETS } from '../decorations';
 import type { DecorationName, Quote } from '../types';
@@ -109,6 +109,7 @@ function QuotePage({
   quote,
   scrollY,
 }: QuotePageProps) {
+  const theme = useTheme<MD3Theme>();
   const actionsOpacity = scrollY.interpolate({
     inputRange: [
       (index - 1) * height,
@@ -152,7 +153,13 @@ function QuotePage({
             />
           )}
           {quote.backgroundImageUrl && (
-            <View pointerEvents="none" style={styles.imageOverlay} />
+            <View
+              pointerEvents="none"
+              style={[
+                styles.imageOverlay,
+                { backgroundColor: theme.colors.backdrop },
+              ]}
+            />
           )}
           <View style={styles.quoteContent}>
             <Decoration color={quote.style.color} name={quote.decoration} />
@@ -198,7 +205,7 @@ function QuotePage({
                   selected={isLoved}
                 >
                   <HeartIcon
-                    color={isLoved ? colors.danger : quote.textColor}
+                    color={isLoved ? theme.colors.error : quote.textColor}
                     size={32}
                   />
                 </IconButton>
@@ -250,7 +257,6 @@ const styles = StyleSheet.create({
     width: 54,
   },
   imageOverlay: {
-    backgroundColor: colors.overlay,
     bottom: 0,
     left: 0,
     position: 'absolute',
@@ -268,7 +274,6 @@ const styles = StyleSheet.create({
     zIndex: 1,
   },
   quotePage: {
-    backgroundColor: colors.background,
     justifyContent: 'center',
     overflow: 'hidden',
     width: '100%',

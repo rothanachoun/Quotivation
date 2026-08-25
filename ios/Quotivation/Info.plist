@@ -58,6 +58,7 @@
 		<string>Lora-Regular.ttf</string>
 		<string>Caveat-SemiBold.ttf</string>
 		<string>Manrope-ExtraBold.ttf</string>
+		<string>MaterialDesignIcons.ttf</string>
 	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>

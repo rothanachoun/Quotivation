@@ -1,12 +1,34 @@
 
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, StatusBar, StyleSheet, View } from 'react-native';
+import { PaperProvider, useTheme, type MD3Theme } from 'react-native-paper';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { initializeDatabase } from '@/database';
-
-import { SafeAreaProvider } from 'react-native-safe-area-context';
 import ApplicationNavigator from '@/navigation/Application';
-import { colors } from '@/theme/colors';
+import { paperTheme } from '@/theme/paperTheme';
+
+function AppContent({ isDatabaseReady }: { isDatabaseReady: boolean }) {
+  const theme = useTheme<MD3Theme>();
+
+  return (
+    <SafeAreaProvider>
+      <StatusBar
+        backgroundColor={theme.colors.background}
+        barStyle="light-content"
+      />
+      {isDatabaseReady ? (
+        <ApplicationNavigator />
+      ) : (
+        <View
+          style={[styles.loading, { backgroundColor: theme.colors.background }]}
+        >
+          <ActivityIndicator color={theme.colors.onBackground} />
+        </View>
+      )}
+    </SafeAreaProvider>
+  );
+}
 
 function App() {
   const [isDatabaseReady, setIsDatabaseReady] = useState(false);
@@ -19,26 +41,10 @@ function App() {
       });
   }, []);
 
-  if (!isDatabaseReady) {
-    return (
-      <View style={styles.loading}>
-        <StatusBar
-          backgroundColor={colors.background}
-          barStyle="light-content"
-        />
-        <ActivityIndicator color={colors.textPrimary} />
-      </View>
-    );
-  }
-
   return (
-    <SafeAreaProvider>
-      <StatusBar
-        backgroundColor={colors.background}
-        barStyle="light-content"
-      />
-      <ApplicationNavigator />
-    </SafeAreaProvider>
+    <PaperProvider theme={paperTheme}>
+      <AppContent isDatabaseReady={isDatabaseReady} />
+    </PaperProvider>
   );
 }
 
@@ -47,7 +53,6 @@ export default App;
 const styles = StyleSheet.create({
   loading: {
     alignItems: 'center',
-    backgroundColor: colors.background,
     flex: 1,
     justifyContent: 'center',
   },

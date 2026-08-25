@@ -1,5 +1,6 @@
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { useTheme, type MD3Theme } from 'react-native-paper';
 import {
   ActivityIndicator,
   FlatList,
@@ -15,24 +16,25 @@ import { getQuoteTopics, type QuoteTopic } from '@/database/quotes';
 import { useSelectedTopic } from '@/hooks/useSelectedTopic';
 import { Paths } from '@/navigation/paths';
 import type { RootStackParamList } from '@/navigation/types';
-import { colors } from '@/theme/colors';
 
 type ExploreProps = NativeStackScreenProps<RootStackParamList, Paths.Explore>;
 
 const TOPIC_CARD_COLORS: Record<string, string> = {
-  confidence: '#F6D675',
-  focus: '#A8E3D1',
-  gratitude: '#FFD39B',
-  healing: '#D7BDF2',
-  motivation: '#FFB678',
-  peace: '#A9DCF3',
-  'personal-growth': '#BCE88F',
-  relationships: '#F5A9AD',
-  resilience: '#B9B5EF',
-  'self-love': '#F4AECA',
+  confidence: '#FCF1CD',
+  focus: '#E5F7F0',
+  gratitude: '#FFF3E1',
+  healing: '#F4EBFC',
+  motivation: '#FFE7CD',
+  peace: '#E5F5FC',
+  'personal-growth': '#EDF8DC',
+  relationships: '#FCE4E6',
+  resilience: '#E9E8FB',
+  'self-love': '#FCE9F0',
 };
 
 function Explore({ navigation }: ExploreProps) {
+  const theme = useTheme<MD3Theme>();
+  const styles = useMemo(() => createStyles(theme), [theme]);
   const insets = useSafeAreaInsets();
   const { selectedTopicId, selectTopic } = useSelectedTopic();
   const [topics, setTopics] = useState<QuoteTopic[]>([]);
@@ -119,14 +121,14 @@ function Explore({ navigation }: ExploreProps) {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (theme: MD3Theme) => StyleSheet.create({
   centeredState: { marginTop: 48 },
   centeredStateText: {
-    color: colors.textSecondary,
+    color: theme.colors.onSurfaceVariant,
     marginTop: 48,
     textAlign: 'center',
   },
-  container: { backgroundColor: colors.background, flex: 1 },
+  container: { backgroundColor: theme.colors.background, flex: 1 },
   list: { backgroundColor: 'transparent', flex: 1 },
   listContent: { paddingHorizontal: 20 },
   topicIcon: {
@@ -138,7 +140,7 @@ const styles = StyleSheet.create({
     transform: [{ scale: 0.97 }],
   },
   selectedCard: {
-    borderColor: colors.textPrimary,
+    borderColor: theme.colors.onSurface,
     borderWidth: 3,
   },
   topicCardShell: {

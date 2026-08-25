@@ -1,5 +1,6 @@
 import { useCallback, useMemo, useRef, useState } from 'react';
 import type { ListRenderItem, ViewToken } from 'react-native';
+import { useTheme, type MD3Theme } from 'react-native-paper';
 import {
   ActivityIndicator,
   Animated,
@@ -12,7 +13,6 @@ import {
 import { useLovedQuotes } from '@/hooks/useLovedQuotes';
 import { useQuoteHistory } from '@/hooks/useQuoteHistory';
 import { useSelectedTopic } from '@/hooks/useSelectedTopic';
-import { colors } from '@/theme/colors';
 
 import QuotePage from './components/QuotePage';
 import { useQuotes } from './hooks/useQuotes';
@@ -25,6 +25,8 @@ function getShareMessage(quote: Quote): string {
 }
 
 function Home() {
+  const theme = useTheme<MD3Theme>();
+  const styles = useMemo(() => createStyles(theme), [theme]);
   const { selectedTopicId } = useSelectedTopic();
   const selectedTopicIds = useMemo(
     () => new Set(selectedTopicId ? [selectedTopicId] : []),
@@ -133,7 +135,7 @@ function Home() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (theme: MD3Theme) => StyleSheet.create({
   centeredState: {
     left: 0,
     position: 'absolute',
@@ -141,7 +143,7 @@ const styles = StyleSheet.create({
     top: '50%',
   },
   centeredStateText: {
-    color: colors.textSecondary,
+    color: theme.colors.onSurfaceVariant,
     left: 24,
     position: 'absolute',
     right: 24,
@@ -149,11 +151,11 @@ const styles = StyleSheet.create({
     top: '50%',
   },
   container: {
-    backgroundColor: colors.background,
+    backgroundColor: theme.colors.background,
     flex: 1,
   },
   feed: {
-    backgroundColor: colors.background,
+    backgroundColor: theme.colors.background,
     flex: 1,
   },
 });

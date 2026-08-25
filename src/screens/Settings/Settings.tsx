@@ -1,10 +1,13 @@
 import { Alert, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { useMemo } from 'react';
+import { useTheme, type MD3Theme } from 'react-native-paper';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useQuoteHistory } from '@/hooks/useQuoteHistory';
-import { colors } from '@/theme/colors';
 
 function Settings() {
+  const theme = useTheme<MD3Theme>();
+  const styles = useMemo(() => createStyles(theme), [theme]);
   const insets = useSafeAreaInsets();
   const { clearQuoteHistory } = useQuoteHistory();
 
@@ -81,16 +84,16 @@ function Settings() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (theme: MD3Theme) => StyleSheet.create({
   card: {
-    backgroundColor: colors.surface,
-    borderColor: colors.border,
+    backgroundColor: theme.colors.surface,
+    borderColor: theme.colors.outline,
     borderRadius: 18,
     borderWidth: StyleSheet.hairlineWidth,
     overflow: 'hidden',
   },
   container: {
-    backgroundColor: colors.background,
+    backgroundColor: theme.colors.background,
     flex: 1,
   },
   content: {
@@ -114,13 +117,13 @@ const styles = StyleSheet.create({
     gap: 5,
   },
   rowDescription: {
-    color: colors.textSecondary,
+    color: theme.colors.onSurfaceVariant,
     fontFamily: 'Manrope-Regular',
     fontSize: 14,
     lineHeight: 20,
   },
   rowTitle: {
-    color: colors.textPrimary,
+    color: theme.colors.onSurface,
     fontFamily: 'Manrope-SemiBold',
     fontSize: 16,
   },
@@ -128,7 +131,7 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   sectionTitle: {
-    color: colors.textMuted,
+    color: theme.colors.onSurfaceDisabled,
     fontFamily: 'Manrope-SemiBold',
     fontSize: 13,
     letterSpacing: 0.6,
@@ -136,7 +139,7 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
   },
   value: {
-    color: colors.textSecondary,
+    color: theme.colors.onSurfaceVariant,
     fontFamily: 'Manrope-Regular',
     fontSize: 14,
   },

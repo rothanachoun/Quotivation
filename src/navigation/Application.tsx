@@ -1,4 +1,4 @@
-import { useRef, type ReactNode } from 'react';
+import { useMemo, useRef, type ReactNode } from 'react';
 import {
   DarkTheme,
   NavigationContainer,
@@ -10,29 +10,15 @@ import {
   LiquidGlassView,
 } from '@callstack/liquid-glass';
 import { Animated, Pressable, StyleSheet, Text } from 'react-native';
+import { useTheme, type MD3Theme } from 'react-native-paper';
 
 import { MenuIcon, ProfileIcon, SettingsIcon } from '@/components/icons';
 import { Paths } from '@/navigation/paths';
 import type { RootStackParamList } from '@/navigation/types';
-import { colors } from '@/theme/colors';
 
 import { Explore, Home, Profile, Settings, Topics } from '@/screens';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
-
-const APP_BACKGROUND_COLOR = colors.background;
-const navigationTheme = {
-  ...DarkTheme,
-  colors: {
-    ...DarkTheme.colors,
-    background: APP_BACKGROUND_COLOR,
-    border: colors.border,
-    card: APP_BACKGROUND_COLOR,
-    notification: colors.accent,
-    primary: colors.accent,
-    text: colors.textPrimary,
-  },
-};
 
 type HeaderIconButtonProps = {
   accessibilityLabel: string;
@@ -52,6 +38,7 @@ function HeaderIconButton({
   glass = false,
   onPress,
 }: HeaderIconButtonProps) {
+  const theme = useTheme<MD3Theme>();
   const scale = useRef(new Animated.Value(1)).current;
 
   const animateTo = (toValue: number) => {
@@ -81,7 +68,11 @@ function HeaderIconButton({
             interactive
             style={[
               styles.headerGlass,
-              !isLiquidGlassSupported && styles.headerGlassFallback,
+              !isLiquidGlassSupported && {
+                backgroundColor: theme.colors.elevation.level2,
+                borderColor: theme.colors.outline,
+                borderWidth: StyleSheet.hairlineWidth,
+              },
             ]}
           >
             {children}
@@ -96,32 +87,35 @@ function HeaderIconButton({
 
 function ExploreHeaderButton() {
   const navigation = useNavigation() as unknown as HomeHeaderNavigation;
+  const theme = useTheme<MD3Theme>();
 
   return (
     <HeaderIconButton
       accessibilityLabel="Open Explore"
       onPress={() => navigation.navigate(Paths.Explore)}
     >
-      <MenuIcon color={colors.textPrimary} size={22} />
+      <MenuIcon color={theme.colors.onSurface} size={22} />
     </HeaderIconButton>
   );
 }
 
 function ProfileHeaderButton() {
   const navigation = useNavigation() as unknown as HomeHeaderNavigation;
+  const theme = useTheme<MD3Theme>();
 
   return (
     <HeaderIconButton
       accessibilityLabel="Open Profile"
       onPress={() => navigation.navigate(Paths.Profile)}
     >
-      <ProfileIcon color={colors.textPrimary} size={22} />
+      <ProfileIcon color={theme.colors.onSurface} size={22} />
     </HeaderIconButton>
   );
 }
 
 function SettingsHeaderButton() {
   const navigation = useNavigation() as unknown as HomeHeaderNavigation;
+  const theme = useTheme<MD3Theme>();
 
   return (
     <HeaderIconButton
@@ -129,13 +123,14 @@ function SettingsHeaderButton() {
       glass
       onPress={() => navigation.navigate(Paths.Settings)}
     >
-      <SettingsIcon color={colors.textPrimary} size={22} />
+      <SettingsIcon color={theme.colors.onSurface} size={22} />
     </HeaderIconButton>
   );
 }
 
 function CloseHeaderButton() {
   const navigation = useNavigation() as unknown as HomeHeaderNavigation;
+  const theme = useTheme<MD3Theme>();
 
   return (
     <HeaderIconButton
@@ -143,7 +138,10 @@ function CloseHeaderButton() {
       glass
       onPress={() => navigation.goBack()}
     >
-      <Text accessibilityElementsHidden style={styles.closeIcon}>
+      <Text
+        accessibilityElementsHidden
+        style={[styles.closeIcon, { color: theme.colors.onSurface }]}
+      >
         ×
       </Text>
     </HeaderIconButton>
@@ -151,15 +149,28 @@ function CloseHeaderButton() {
 }
 
 function ApplicationNavigator() {
+  const theme = useTheme<MD3Theme>();
+  const navigationTheme = useMemo(() => ({
+    ...DarkTheme,
+    colors: {
+      ...DarkTheme.colors,
+      background: theme.colors.background,
+      border: theme.colors.outline,
+      card: theme.colors.background,
+      notification: theme.colors.error,
+      primary: theme.colors.primary,
+      text: theme.colors.onBackground,
+    },
+  }), [theme]);
   return (
     <NavigationContainer theme={navigationTheme}>
       <Stack.Navigator
         screenOptions={{
-          contentStyle: { backgroundColor: APP_BACKGROUND_COLOR },
+          contentStyle: { backgroundColor: theme.colors.background },
           headerBackButtonDisplayMode: 'minimal',
           headerShadowVisible: false,
-          headerStyle: { backgroundColor: APP_BACKGROUND_COLOR },
-          headerTintColor: colors.textPrimary,
+          headerStyle: { backgroundColor: theme.colors.background },
+          headerTintColor: theme.colors.onSurface,
         }}
       >
         <Stack.Screen
@@ -169,7 +180,7 @@ function ApplicationNavigator() {
             headerLeft: ExploreHeaderButton,
             headerRight: ProfileHeaderButton,
             headerStyle: { backgroundColor: 'transparent' },
-            headerTitle: 'For You',
+            headerTitle: '',
             headerTransparent: true,
             scrollEdgeEffects: {
               bottom: 'hidden',
@@ -185,7 +196,7 @@ function ApplicationNavigator() {
           options={({ navigation }) => ({
             headerLeft: CloseHeaderButton,
             headerStyle: { backgroundColor: 'transparent' },
-            headerTitleStyle: { color: colors.exploreAccent },
+            headerTitleStyle: { color: theme.colors.primary },
             headerTransparent: true,
             presentation: 'fullScreenModal',
             title: 'Explore',
@@ -195,7 +206,7 @@ function ApplicationNavigator() {
                 icon: { name: 'xmark', type: 'sfSymbol' },
                 label: 'Close',
                 onPress: () => navigation.goBack(),
-                tintColor: colors.textPrimary,
+                tintColor: theme.colors.onSurface,
                 type: 'button',
               },
             ],
@@ -217,7 +228,7 @@ function ApplicationNavigator() {
                 icon: { name: 'xmark', type: 'sfSymbol' },
                 label: 'Close',
                 onPress: () => navigation.goBack(),
-                tintColor: colors.textPrimary,
+                tintColor: theme.colors.onSurface,
                 type: 'button',
               },
             ],
@@ -227,7 +238,7 @@ function ApplicationNavigator() {
                 icon: { name: 'gearshape', type: 'sfSymbol' },
                 label: 'Settings',
                 onPress: () => navigation.navigate(Paths.Settings),
-                tintColor: colors.textPrimary,
+                tintColor: theme.colors.onSurface,
                 type: 'button',
               },
             ],
@@ -252,7 +263,6 @@ export default ApplicationNavigator;
 
 const styles = StyleSheet.create({
   closeIcon: {
-    color: colors.textPrimary,
     fontFamily: 'Manrope-Regular',
     fontSize: 27,
     lineHeight: 30,
@@ -271,10 +281,5 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     overflow: 'hidden',
     width: 40,
-  },
-  headerGlassFallback: {
-    backgroundColor: colors.surfaceElevated,
-    borderColor: colors.border,
-    borderWidth: StyleSheet.hairlineWidth,
   },
 });

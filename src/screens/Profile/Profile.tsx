@@ -1,10 +1,11 @@
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { useMemo } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { Paths } from '@/navigation/paths';
 import type { RootStackParamList } from '@/navigation/types';
-import { colors } from '@/theme/colors';
+import { useTheme, type MD3Theme } from 'react-native-paper';
 
 type ProfileSetting = {
   description: string;
@@ -39,6 +40,8 @@ type SettingRowProps = {
 };
 
 function SettingRow({ isLast, onPress, setting }: SettingRowProps) {
+  const theme = useTheme<MD3Theme>();
+  const styles = useMemo(() => createStyles(theme), [theme]);
   return (
     <Pressable
       accessibilityLabel={`${setting.title}. ${setting.description}${
@@ -71,6 +74,8 @@ type ProfileProps = NativeStackScreenProps<RootStackParamList, Paths.Profile>;
 
 function Profile({ navigation }: ProfileProps) {
   const insets = useSafeAreaInsets();
+  const theme = useTheme<MD3Theme>();
+  const styles = useMemo(() => createStyles(theme), [theme]);
 
   return (
     <ScrollView
@@ -81,7 +86,7 @@ function Profile({ navigation }: ProfileProps) {
           paddingBottom: insets.bottom + 120,
         },
       ]}
-      style={styles.container}
+      style={[styles.container, { backgroundColor: theme.colors.background }]}
     >
       <View style={styles.header}>
         <Text style={styles.subtitle}>
@@ -91,7 +96,7 @@ function Profile({ navigation }: ProfileProps) {
 
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Personalization</Text>
-        <View style={styles.settingsCard}>
+        <View style={[styles.settingsCard, { backgroundColor: theme.colors.surface }]}>
           {PERSONALIZATION_SETTINGS.map((setting, index) => (
             <SettingRow
               isLast={index === PERSONALIZATION_SETTINGS.length - 1}
@@ -110,14 +115,13 @@ function Profile({ navigation }: ProfileProps) {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (theme: MD3Theme) => StyleSheet.create({
   chevron: {
-    color: colors.textMuted,
+    color: theme.colors.onSurfaceDisabled,
     fontFamily: 'Manrope-Regular',
     fontSize: 30,
   },
   container: {
-    backgroundColor: colors.background,
     flex: 1,
   },
   content: {
@@ -131,7 +135,7 @@ const styles = StyleSheet.create({
     marginTop: 28,
   },
   sectionTitle: {
-    color: colors.textMuted,
+    color: theme.colors.onSurfaceDisabled,
     fontFamily: 'Manrope-SemiBold',
     fontSize: 13,
     letterSpacing: 0.6,
@@ -143,7 +147,7 @@ const styles = StyleSheet.create({
     gap: 5,
   },
   settingDescription: {
-    color: colors.textSecondary,
+    color: theme.colors.onSurfaceVariant,
     fontFamily: 'Manrope-Regular',
     fontSize: 14,
     lineHeight: 20,
@@ -157,34 +161,33 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
   },
   settingRowBorder: {
-    borderBottomColor: colors.border,
+    borderBottomColor: theme.colors.outline,
     borderBottomWidth: StyleSheet.hairlineWidth,
   },
   settingTitle: {
-    color: colors.textPrimary,
+    color: theme.colors.onSurface,
     fontFamily: 'Manrope-SemiBold',
     fontSize: 16,
   },
   settingsCard: {
-    backgroundColor: colors.surface,
-    borderColor: colors.border,
+    borderColor: theme.colors.outline,
     borderRadius: 18,
     borderWidth: StyleSheet.hairlineWidth,
     overflow: 'hidden',
   },
   statusBadge: {
-    backgroundColor: colors.surfaceElevated,
+    backgroundColor: theme.colors.elevation.level2,
     borderRadius: 12,
     paddingHorizontal: 10,
     paddingVertical: 6,
   },
   statusText: {
-    color: colors.textSecondary,
+    color: theme.colors.onSurfaceVariant,
     fontFamily: 'Manrope-SemiBold',
     fontSize: 11,
   },
   subtitle: {
-    color: colors.textSecondary,
+    color: theme.colors.onSurfaceVariant,
     fontFamily: 'Manrope-Regular',
     fontSize: 15,
     lineHeight: 21,

@@ -2,7 +2,6 @@ import type { QuoteRow } from '@/database/quotes';
 
 import type {
   Quote,
-  QuoteAuthor,
   QuoteSegment,
   QuoteTextStyle,
 } from './types';
@@ -31,20 +30,19 @@ function parseJson<T>(value: string | null, fallback: T): T {
 export function mapQuoteRow(row: QuoteRow): Quote {
   const style: QuoteTextStyle = {
     ...DEFAULT_TEXT_STYLE,
-    ...parseJson<Partial<QuoteTextStyle>>(row.style_json, {}),
+    ...parseJson<Partial<QuoteTextStyle>>(row.style, {}),
   };
-  const authorData = parseJson<Partial<QuoteAuthor>>(row.author_json, {});
 
   return {
     author: {
-      name: authorData.name ?? '',
+      name: row.author ?? '',
     },
     backgroundColor: row.background_color,
     backgroundImageUrl: row.background_image_url,
     decoration: resolveDecorationName(row.decoration),
     id: row.id,
     imageUrl: row.image_url,
-    segments: parseJson<QuoteSegment[]>(row.segments_json, [
+    segments: parseJson<QuoteSegment[]>(row.segments, [
       { text: row.text },
     ]),
     style,

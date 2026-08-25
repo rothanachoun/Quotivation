@@ -238,5 +238,29 @@ const focusQuotes = curatedFocusQuotes.map(([text, author], index) => {
 });
 quotes.splice(firstFocusIndex, 100, ...focusQuotes);
 
+const quoteBackground = '#242424';
+const quoteTextColor = '#FAFAFC';
+
+for (const quote of quotes) {
+  const fontSize =
+    quote.text.length > 160
+      ? 23
+      : quote.text.length > 115
+        ? 25
+        : quote.text.length > 75
+          ? 28
+          : 31;
+
+  quote.backgroundColor = quoteBackground;
+  quote.style = {
+    color: quoteTextColor,
+    fontFamily: quoteFont,
+    fontSize,
+    lineHeight: Math.round(fontSize * 1.38),
+    textAlign: 'center',
+  };
+  quote.updatedAt = '2026-08-25T00:00:00Z';
+}
+
 writeFileSync(quotesPath, `${JSON.stringify(quotes, null, 2)}\n`);
 console.log(`Generated ${quotes.length} original quotes across ${topics.length} topics`);

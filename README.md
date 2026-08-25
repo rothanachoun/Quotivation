@@ -68,33 +68,71 @@ topics and do not create additional Explore sections.
 
 ### Quote topic assignments
 
-Every quote must reference at least one canonical topic. Quotes can appear in
-multiple topics without being duplicated:
+Every quote must reference exactly one canonical topic:
 
 ```json
 {
   "id": "quote-001",
   "type": "text",
   "text": "You have survived every difficult day that brought you here.",
-  "topicIds": ["resilience", "healing", "motivation"],
+  "topicIds": ["resilience"],
   "author": { "name": "" }
 }
 ```
 
 Author typography is global. Authors inherit the quote font family, color, and
-alignment, so `author` stores only `name`.
+alignment and render at a smaller size. SQLite stores only the author name in
+the plain-text `author` column. Quote presentation JSON is stored in the
+`style` and `segments` columns.
 
 ### SQLite schema
 
-The importer creates a normalized many-to-many model:
+The current bundled database is version `13` and uses one table:
 
-```text
-topics ──< quote_topics >── quotes
+```sql
+PRAGMA user_version = 13;
+
+CREATE TABLE quotes (
+  id                   TEXT PRIMARY KEY,
+  topic_id             TEXT NOT NULL,
+  type                 TEXT NOT NULL,
+  text                 TEXT NOT NULL,
+  decoration           TEXT NOT NULL DEFAULT 'soft',
+  author               TEXT,
+  style                TEXT,
+  segments             TEXT,
+  background_color     TEXT NOT NULL,
+  background_image_url TEXT,
+  image_url             TEXT,
+  updated_at           TEXT NOT NULL,
+  shuffle_key          INTEGER NOT NULL
+);
+
+CREATE INDEX idx_quotes_shuffle
+  ON quotes(shuffle_key);
+
+CREATE INDEX idx_quotes_topic_shuffle
+  ON quotes(topic_id, shuffle_key, id);
 ```
 
-- `topics` stores the canonical topic metadata.
-- `quotes` stores quote content and presentation data.
-- `quote_topics` assigns one quote to one or more topics.
+Column notes:
+
+- `topic_id` stores the quote's single topic assignment. Topic names,
+  descriptions, and tags remain in `topics.json` rather than SQLite.
+- `author` stores only the author name as plain text. Author presentation is
+  global and inherits the main quote font, color, and alignment at a smaller
+  size.
+- `style` and `segments` contain serialized JSON used for quote typography and
+  styled text segments. The column names intentionally omit the `_json`
+  suffix.
+- Generated quote styles use the Paper theme background (`#242424`) and
+  foreground (`#FAFAFC`), centered `Lora-SemiBold` typography, and
+  length-aware font sizes from 23–31 points.
+- `background_image_url` and `image_url` are nullable because most quotes are
+  text-only.
+- `shuffle_key` provides a stable randomized feed order.
+- `idx_quotes_topic_shuffle` supports efficient topic-filtered feed queries;
+  `idx_quotes_shuffle` supports unscoped shuffle traversal.
 
 ### Updating bundled content
 
@@ -115,9 +153,9 @@ npm run db:import
 5. Rebuild the native app so the updated database is bundled.
 
 The importer validates topic metadata, quote IDs, quote types, and all
-`topicIds`. It rejects duplicates and unknown topics, rebuilds the three tables
-in one transaction, creates lookup indexes, and writes the bundle version to
-SQLite `PRAGMA user_version`.
+`topicIds`. It requires exactly one known topic per quote, rejects duplicate
+quote IDs, rebuilds the `quotes` table in one transaction, creates lookup
+indexes, and writes the bundle version to SQLite `PRAGMA user_version`.
 
 ## Personalization
 

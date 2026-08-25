@@ -1,16 +1,18 @@
 import { getDatabase } from './index';
+import topicCatalog from '@/assets/db/topics.json';
 
 export type QuoteRow = {
-  author_json: string | null;
+  author: string | null;
   background_color: string;
   background_image_url: string | null;
   decoration: string | null;
   id: string;
   image_url: string | null;
-  segments_json: string | null;
+  segments: string | null;
   shuffle_key: number;
-  style_json: string | null;
+  style: string | null;
   text: string;
+  topic_id: string;
   type: 'image' | 'text';
   updated_at: string;
 };
@@ -23,28 +25,27 @@ export type QuoteTopic = {
   tags: string[];
 };
 
-type TopicRow = {
-  description: string;
-  id: string;
-  name: string;
+type TopicCountRow = {
   quote_count: number;
-  tags_json: string;
+  topic_id: string;
 };
 
 export async function getQuoteTopics(): Promise<QuoteTopic[]> {
   const result = await getDatabase().execute(
-    `SELECT topics.*, COUNT(quote_topics.quote_id) AS quote_count
-     FROM topics
-     LEFT JOIN quote_topics ON quote_topics.topic_id = topics.id
-     GROUP BY topics.id
-     ORDER BY topics.rowid`,
+    `SELECT topic_id, COUNT(*) AS quote_count
+     FROM quotes
+     GROUP BY topic_id`,
   );
-  return (result.rows as TopicRow[]).map(row => ({
-    description: row.description,
-    id: row.id,
-    name: row.name,
-    quoteCount: Number(row.quote_count),
-    tags: JSON.parse(row.tags_json) as string[],
+  const counts = new Map(
+    (result.rows as TopicCountRow[]).map(row => [
+      row.topic_id,
+      Number(row.quote_count),
+    ]),
+  );
+
+  return topicCatalog.map(topic => ({
+    ...topic,
+    quoteCount: counts.get(topic.id) ?? 0,
   }));
 }
 
@@ -58,9 +59,8 @@ export async function getQuotesByTopicIds(
   const shuffleCursor = Math.floor(Math.random() * 2147483647);
   const query = (comparison: '>=' | '<', queryLimit: number) =>
     database.execute(
-      `SELECT DISTINCT quotes.* FROM quotes
-       INNER JOIN quote_topics ON quote_topics.quote_id = quotes.id
-       WHERE quote_topics.topic_id IN (${placeholders})
+      `SELECT * FROM quotes
+       WHERE topic_id IN (${placeholders})
          AND quotes.shuffle_key ${comparison} ?
        ORDER BY quotes.shuffle_key, quotes.id LIMIT ?`,
       [...topicIds, shuffleCursor, queryLimit],

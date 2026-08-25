@@ -5,6 +5,8 @@ import {
   personalizationStorage,
 } from '@/storage/personalizationStorage';
 
+export const PERSONALIZED_FEED_ID = 'personalized';
+
 export function useSelectedTopic() {
   const [selectedTopicId, setSelectedTopicId] = useMMKVString(
     personalizationKeys.selectedTopicId,

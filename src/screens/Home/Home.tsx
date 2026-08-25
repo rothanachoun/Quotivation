@@ -11,8 +11,12 @@ import {
 } from 'react-native';
 
 import { useLovedQuotes } from '@/hooks/useLovedQuotes';
+import { useFollowedTopics } from '@/hooks/useFollowedTopics';
 import { useQuoteHistory } from '@/hooks/useQuoteHistory';
-import { useSelectedTopic } from '@/hooks/useSelectedTopic';
+import {
+  PERSONALIZED_FEED_ID,
+  useSelectedTopic,
+} from '@/hooks/useSelectedTopic';
 
 import QuotePage from './components/QuotePage';
 import { useQuotes } from './hooks/useQuotes';
@@ -28,10 +32,15 @@ function Home() {
   const theme = useTheme<MD3Theme>();
   const styles = useMemo(() => createStyles(theme), [theme]);
   const { selectedTopicId } = useSelectedTopic();
+  const { followedTopicIds } = useFollowedTopics();
   const selectedTopicIds = useMemo(
-    () => new Set(selectedTopicId ? [selectedTopicId] : []),
-    [selectedTopicId],
+    () =>
+      selectedTopicId === PERSONALIZED_FEED_ID
+        ? followedTopicIds
+        : new Set(selectedTopicId ? [selectedTopicId] : []),
+    [followedTopicIds, selectedTopicId],
   );
+  const feedKey = [...selectedTopicIds].sort().join(',') || 'empty-feed';
   const { error, isLoading, isRefreshing, quotes, refresh } =
     useQuotes(selectedTopicIds);
   const { isLoved, toggleLovedQuote } = useLovedQuotes();
@@ -93,9 +102,11 @@ function Home() {
       )}
       {!isLoading && !error && quotes.length === 0 && (
         <Text style={styles.centeredStateText}>
-          {selectedTopicId
-            ? 'No quotes are available for this topic.'
-            : 'Choose a topic in Explore to begin.'}
+          {selectedTopicId === PERSONALIZED_FEED_ID
+            ? 'Follow one or more topics in Profile to build your personalized feed.'
+            : selectedTopicId
+              ? 'No quotes are available for this topic.'
+              : 'Choose a topic in Explore to begin.'}
         </Text>
       )}
       {canRenderFeed && (
@@ -111,7 +122,7 @@ function Home() {
             offset: pageHeight * index,
           })}
           initialNumToRender={2}
-          key={selectedTopicId ?? 'unselected-topic'}
+          key={feedKey}
           keyExtractor={item => item.id}
           maxToRenderPerBatch={3}
           onScroll={Animated.event(

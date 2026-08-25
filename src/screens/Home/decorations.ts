@@ -11,34 +11,34 @@ export type DecorationPreset = {
 
 export const DECORATION_PRESETS: Record<DecorationName, DecorationPreset> = {
   block: {
-    alignment: 'left',
+    alignment: 'center',
     icon: 'quote-1',
     placement: 'top',
-    size: 44,
+    size: 38,
   },
   classic: {
     alignment: 'center',
     icon: 'quote-2',
     placement: 'top',
-    size: 44,
+    size: 38,
   },
   compact: {
-    alignment: 'left',
+    alignment: 'center',
     icon: 'quote-3',
     placement: 'top',
-    size: 44,
+    size: 38,
   },
   soft: {
     alignment: 'center',
     icon: 'quote-4',
     placement: 'top',
-    size: 44,
+    size: 38,
   },
   round: {
-    alignment: 'left',
+    alignment: 'center',
     icon: 'quote-5',
     placement: 'top',
-    size: 44,
+    size: 38,
   },
 };
 

@@ -270,9 +270,7 @@ const styles = StyleSheet.create({
   },
   headerButton: {
     alignItems: 'center',
-    height: 44,
     justifyContent: 'center',
-    width: 44,
   },
   headerGlass: {
     alignItems: 'center',

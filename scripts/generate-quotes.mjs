@@ -60,7 +60,7 @@ const palettes = [
 const quoteFont = 'Lora-SemiBold';
 
 const alignments = ['left', 'center'];
-const decorations = ['block', 'classic', 'compact', 'soft', 'round'];
+const quotations = [1, 2, 3, 4];
 const updatedAt = '2026-08-10T00:00:00Z';
 const quotes = [];
 
@@ -154,7 +154,7 @@ for (const topic of topics) {
             textAlign,
           },
           segments: [{ text }],
-          decoration: decorations[(number - 1) % decorations.length],
+          quotation: quotations[(number - 1) % quotations.length],
           backgroundColor: palette.background,
           backgroundImageUrl: null,
           imageUrl: null,
@@ -186,7 +186,7 @@ const selfLoveQuotes = curatedSelfLoveQuotes.map(([text, author], index) => {
       textAlign: alignments[index % alignments.length],
     },
     segments: [{ text }],
-    decoration: decorations[index % decorations.length],
+    quotation: quotations[index % quotations.length],
     backgroundColor: palette.background,
     backgroundImageUrl: null,
     imageUrl: null,
@@ -242,6 +242,8 @@ const quoteBackground = '#242424';
 const quoteTextColor = '#FAFAFC';
 
 for (const quote of quotes) {
+  const quoteNumber = Number.parseInt(quote.id.match(/\d+$/)?.[0] ?? '0', 10);
+  const usesPoppins = quote.text.length <= 115 && quoteNumber % 4 === 0;
   const fontSize =
     quote.text.length > 160
       ? 23
@@ -254,7 +256,7 @@ for (const quote of quotes) {
   quote.backgroundColor = quoteBackground;
   quote.style = {
     color: quoteTextColor,
-    fontFamily: quoteFont,
+    fontFamily: usesPoppins ? 'Poppins-Bold' : quoteFont,
     fontSize,
     lineHeight: Math.round(fontSize * 1.38),
     textAlign: 'center',

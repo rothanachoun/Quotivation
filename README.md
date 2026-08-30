@@ -87,17 +87,18 @@ the plain-text `author` column. Quote presentation JSON is stored in the
 
 ### SQLite schema
 
-The current bundled database is version `13` and uses one table:
+The current bundled database is version `17` and uses one table:
 
 ```sql
-PRAGMA user_version = 13;
+PRAGMA user_version = 17;
 
 CREATE TABLE quotes (
   id                   TEXT PRIMARY KEY,
   topic_id             TEXT NOT NULL,
   type                 TEXT NOT NULL,
   text                 TEXT NOT NULL,
-  decoration           TEXT NOT NULL DEFAULT 'soft',
+  quotation            INTEGER NOT NULL DEFAULT 1
+                         CHECK (quotation BETWEEN 1 AND 4),
   author               TEXT,
   style                TEXT,
   segments             TEXT,
@@ -117,17 +118,21 @@ CREATE INDEX idx_quotes_topic_shuffle
 
 Column notes:
 
+- `quotation` selects quote-symbol preset `1`, `2`, `3`, or `4`. Preset `1`
+  is the default; named variants are no longer stored.
 - `topic_id` stores the quote's single topic assignment. Topic names,
   descriptions, and tags remain in `topics.json` rather than SQLite.
 - `author` stores only the author name as plain text. Author presentation is
   global and inherits the main quote font, color, and alignment at a smaller
-  size.
+  size. During import, `Unknown`, `Unknow`, and their attribution-note variants
+  are normalized to `NULL`.
 - `style` and `segments` contain serialized JSON used for quote typography and
   styled text segments. The column names intentionally omit the `_json`
   suffix.
 - Generated quote styles use the Paper theme background (`#242424`) and
-  foreground (`#FAFAFC`), centered `Lora-SemiBold` typography, and
-  length-aware font sizes from 23–31 points.
+  foreground (`#FAFAFC`) with centered, length-aware typography from 23–31
+  points. Longer quotes use `Lora-SemiBold`; a stable subset of shorter quotes
+  uses `Poppins-Bold`.
 - `background_image_url` and `image_url` are nullable because most quotes are
   text-only.
 - `shuffle_key` provides a stable randomized feed order.

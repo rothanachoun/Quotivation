@@ -1,49 +1,41 @@
 import type { QuoteIconName } from '@/components/icons';
 
-import type { DecorationName } from './types';
+import type { QuotationId } from './types';
 
-export type DecorationPreset = {
+export type QuotationPreset = {
   alignment: 'center' | 'left';
   icon: QuoteIconName;
   placement: 'background' | 'bottom' | 'top';
   size: number;
 };
 
-export const DECORATION_PRESETS: Record<DecorationName, DecorationPreset> = {
-  block: {
+export const QUOTATION_PRESETS: Record<QuotationId, QuotationPreset> = {
+  1: {
     alignment: 'center',
     icon: 'quote-1',
     placement: 'top',
     size: 38,
   },
-  classic: {
+  2: {
     alignment: 'center',
     icon: 'quote-2',
     placement: 'top',
     size: 38,
   },
-  compact: {
+  3: {
     alignment: 'center',
     icon: 'quote-3',
     placement: 'top',
     size: 38,
   },
-  soft: {
+  4: {
     alignment: 'center',
     icon: 'quote-4',
     placement: 'top',
     size: 38,
   },
-  round: {
-    alignment: 'center',
-    icon: 'quote-5',
-    placement: 'top',
-    size: 38,
-  },
 };
 
-export function resolveDecorationName(value: string | null): DecorationName {
-  return value && value in DECORATION_PRESETS
-    ? (value as DecorationName)
-    : 'soft';
+export function resolveQuotationId(value: number | null): QuotationId {
+  return value && value in QUOTATION_PRESETS ? (value as QuotationId) : 1;
 }

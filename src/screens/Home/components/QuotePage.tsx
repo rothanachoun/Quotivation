@@ -10,8 +10,8 @@ import {
 import { useTheme, type MD3Theme } from 'react-native-paper';
 import { HeartIcon, QuoteIcon, ShareIcon } from '@/components/icons';
 
-import { DECORATION_PRESETS } from '../decorations';
-import type { DecorationName, Quote } from '../types';
+import { QUOTATION_PRESETS } from '../quotations';
+import type { QuotationId, Quote } from '../types';
 
 type QuotePageProps = {
   height: number;
@@ -23,9 +23,9 @@ type QuotePageProps = {
   scrollY: Animated.Value;
 };
 
-type DecorationProps = {
+type QuotationProps = {
   color: string;
-  name: DecorationName;
+  name: QuotationId;
 };
 
 type IconButtonProps = {
@@ -70,8 +70,8 @@ function IconButton({
   );
 }
 
-function Decoration({ color, name }: DecorationProps) {
-  const preset = DECORATION_PRESETS[name];
+function Quotation({ color, name }: QuotationProps) {
+  const preset = QUOTATION_PRESETS[name];
 
   return (
     <View pointerEvents="none" style={styles.symbolLayer}>
@@ -162,7 +162,7 @@ function QuotePage({
             />
           )}
           <View style={styles.quoteContent}>
-            <Decoration color={quote.style.color} name={quote.decoration} />
+            <Quotation color={quote.style.color} name={quote.quotation} />
             <View style={styles.quoteCopy}>
               <Text
                 accessibilityLabel={quote.text}
@@ -270,7 +270,7 @@ const styles = StyleSheet.create({
     position: 'relative',
   },
   quoteCopy: {
-    paddingTop: 72,
+    paddingTop: 48,
     zIndex: 1,
   },
   quotePage: {

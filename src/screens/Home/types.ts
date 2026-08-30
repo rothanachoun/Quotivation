@@ -10,12 +10,7 @@ export type QuoteAuthor = {
   name: string;
 };
 
-export type DecorationName =
-  | 'block'
-  | 'classic'
-  | 'compact'
-  | 'soft'
-  | 'round';
+export type QuotationId = 1 | 2 | 3 | 4;
 
 export type QuoteSegment = {
   style?: {
@@ -31,7 +26,7 @@ export type Quote = {
   author: QuoteAuthor;
   backgroundColor: string;
   backgroundImageUrl: string | null;
-  decoration: DecorationName;
+  quotation: QuotationId;
   id: string;
   imageUrl: string | null;
   segments: QuoteSegment[];

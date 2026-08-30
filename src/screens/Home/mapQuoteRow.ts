@@ -5,11 +5,11 @@ import type {
   QuoteSegment,
   QuoteTextStyle,
 } from './types';
-import { resolveDecorationName } from './decorations';
+import { resolveQuotationId } from './quotations';
 
 const DEFAULT_TEXT_STYLE: QuoteTextStyle = {
   color: '#FFFFFF',
-  fontFamily: 'DMSerifDisplay-Regular',
+  fontFamily: 'Lora-SemiBold',
   fontSize: 34,
   lineHeight: 48,
   textAlign: 'center',
@@ -39,7 +39,7 @@ export function mapQuoteRow(row: QuoteRow): Quote {
     },
     backgroundColor: row.background_color,
     backgroundImageUrl: row.background_image_url,
-    decoration: resolveDecorationName(row.decoration),
+    quotation: resolveQuotationId(row.quotation),
     id: row.id,
     imageUrl: row.image_url,
     segments: parseJson<QuoteSegment[]>(row.segments, [

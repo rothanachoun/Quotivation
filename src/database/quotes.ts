@@ -5,7 +5,7 @@ export type QuoteRow = {
   author: string | null;
   background_color: string;
   background_image_url: string | null;
-  decoration: string | null;
+  quotation: number | null;
   id: string;
   image_url: string | null;
   segments: string | null;
